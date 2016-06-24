@@ -5,7 +5,7 @@
   "main": "app/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./app/images/app.icns --app-version=$npm_package_version --prune --asar"
+    "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune --asar --app-category-type=public.app-category.productivity"
   },
   "author": "Nathan McWilliams",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "electron-packager": "^7.0.4",
     "electron-prebuilt": "^1.2.5",
     "eslint": "^2.13.1",
+    "eslint-plugin-html": "^1.5.1",
     "node-ping": "^0.1.0"
   }
 }
