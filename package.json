@@ -2,7 +2,7 @@
   "name": "blue",
   "version": "0.1.0",
   "description": "share peripherals and screens between macs",
-  "main": "app/main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune --asar --app-category-type=public.app-category.productivity"

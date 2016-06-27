@@ -12,5 +12,12 @@
 
   <body>
     <blue-app></blue-app>
+
+    <script>
+      const {remote} = require('electron');
+      const {Menu} = remote;
+      const template = require('./lib/menu');
+      Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+    </script>
   </body>
 </html>
