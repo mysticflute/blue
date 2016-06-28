@@ -1,0 +1,37 @@
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel='import' href='../blue-add/blue-add.html'>
+<link rel='import' href='../blue-card/blue-card.html'>
+
+<dom-module id='blue-overview'>
+  <style include="iron-flex"></style>
+
+  <template>
+    <style>
+      :host {
+        background: #eee;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+      }
+      .container {
+        margin: 15px;
+      }
+    </style>
+
+    <div class="container layout horizontal">
+      <blue-card></blue-card>
+      <blue-add id='add'></blue-add>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'blue-overview',
+      ready: function() {
+        this.$.add.highlight();
+      }
+    });
+  </script>
+</dom-module>

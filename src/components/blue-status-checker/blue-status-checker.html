@@ -1,0 +1,152 @@
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icons/notification-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icons/communication-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/paper-spinner/paper-spinner.html'>
+<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-input-addon-behavior.html'>
+
+<dom-module id='blue-status-checker'>
+  <template>
+    <style>
+      :host {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1px;
+      }
+
+      iron-icon {
+        --iron-icon-fill-color: #9b9b9b;
+      }
+
+      iron-icon.success {
+        --iron-icon-fill-color: #0f9d58;
+      }
+
+      iron-icon + iron-icon {
+        margin-left: 4px;
+      }
+
+      paper-spinner + iron-icon {
+        margin-left: 6px;
+      }
+
+      paper-spinner {
+        --paper-spinner-stroke-width: 1px;
+        display: none;
+        width: 18px;
+        height: 18px;
+      }
+
+      paper-spinner.checking  {
+        display: inline-block;
+      }
+
+      paper-tooltip span {
+        display: block;
+        white-space: nowrap;
+      }
+
+      paper-tooltip span + span {
+        margin-top: 5px;
+      }
+    </style>
+
+    <!-- spinner -->
+    <paper-spinner id='spinner' alt='checking...' active></paper-spinner>
+
+    <!-- status icons -->
+    <iron-icon icon='notification:wifi' id='connection'></iron-icon>
+    <iron-icon icon='communication:vpn-key' id='ssh'></iron-icon>
+
+    <!-- tooltips  -->
+    <paper-tooltip for='connection' offset='5'>
+      <span>Status: {{connectionStatus}}</span>
+      <span>IP Address: {{ipAddress}}</span>
+    </paper-tooltip>
+    <paper-tooltip for='ssh' offset='5'>
+      <span>SSH Access: {{sshStatus}}</span>
+    </paper-tooltip>
+  </template>
+
+  <script>
+    const network = require('./lib/network');
+    const Q = require('q');
+
+    Polymer({
+      is: 'blue-status-checker',
+
+      // PROPERTIES
+      properties: {
+        address: {
+          type: 'String'
+        },
+        ipAddress: {
+          type: String,
+          notify: true,
+          readOnly: true,
+          value: 'n/a'
+        },
+        connectionStatus: {
+          type: 'String',
+          notify: true,
+          readOnly: true,
+          value: 'unchecked' // unchecked, disconnected, connected
+        },
+        sshStatus: {
+          type: 'String',
+          notify: true,
+          readOnly: true,
+          value: 'unverified' // unverified, verified
+        }
+      },
+
+      // BEHAVIORS
+      behaviors: [
+        Polymer.PaperInputAddonBehavior
+      ],
+
+      // METHODS
+      update: function(state) {
+        if (state.inputElement) {
+          this.checkNewAddress(state.inputElement.value);
+        } else {
+          console.log('not checking status');
+        }
+      },
+
+      checkNewAddress: function(address) {
+        if (address.length > 3 && address !== this.address) {
+          this.address = address;
+
+          // turn on the spinner
+          this.toggleClass('checking', true, this.$.spinner);
+
+          // do our status checks
+          Q.all([
+            this.checkConnection(),
+            this.checkSsh()
+          ]).done(() => {
+            this.toggleClass('checking', false, this.$.spinner);
+          });
+        }
+      },
+
+      checkConnection: function() {
+        return network.ping(this.address).then(response => {
+          this._setIpAddress(response.success ? response.ip : 'n/a');
+          this._setConnectionStatus(response.success ? 'connected' : 'disconnected');
+          this.toggleClass('success', response.success, this.$.connection);
+          this.updateStyles();
+        });
+      },
+
+      checkSsh: function() {
+        return Q.fcall(() => {
+          console.log('checked ssh');
+        });
+      }
+    });
+  </script>
+</dom-module>

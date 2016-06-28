@@ -1,0 +1,130 @@
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html'>
+<link rel='import' href='../../../bower_components/paper-listbox/paper-listbox.html'>
+<link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
+
+<link rel='import' href='../blue-status-checker/blue-status-checker.html'>
+
+<dom-module id='blue-card'>
+  <template>
+    <style>
+      :host {
+        width: 300px;
+
+        --paper-input-container-underline: {
+          background: #aaa;
+        }
+      }
+
+      paper-dropdown-menu {
+        width: 100%;
+      }
+    </style>
+
+    <paper-card image='{{image}}'>
+      <!-- <img src='iMac.png' width='300' height='225'/> -->
+      <div class='card-content'>
+        <!-- TYPE -->
+        <paper-dropdown-menu label='type' on-iron-select='changeType' noink>
+          <paper-listbox class='dropdown-content'>
+            <paper-item data-key='imac'>iMac</paper-item>
+            <paper-item data-key='macbook'>Macbook</paper-item>
+            <paper-item data-key='macpro'>Mac Pro</paper-item>
+            <paper-item data-key='mac mini'>Mac Mini</paper-item>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+        <!-- ADDRESS -->
+        <paper-input label='address' value='{{address}}' on-change='changeAddress' required auto-validate>
+          <blue-status-checker suffix></blue-status-checker>
+        </paper-input>
+
+        <!-- NICKNAME -->
+        <paper-input label='nickname' value='{{nickname}}'></paper-input>
+      </div>
+    </paper-card>
+  </template>
+
+  <script>
+    const S = require('string');
+
+    Polymer({
+      is: 'blue-card',
+
+      // PROPERTIES
+      properties: {
+        id: {
+          type: Number,
+          readOnly: true,
+          value: -1
+        },
+        type: {
+          type: 'String'
+        },
+        address: {
+          type: 'String',
+          notify: true
+        },
+        nickname: {
+          type: 'String',
+          notify: true
+        },
+        image: {
+          type: 'String',
+          notify: true,
+          value: function() { return this.resolveUrl('macbook.png'); }
+        }
+      },
+
+      // LIFECYCLE CALLBACKS
+      ready: function() {
+      },
+
+      // INPUT HANDLERS
+      changeType: function(e, detail) {
+        let item = detail.item;
+        let key = item.dataset.key;
+
+        this.key = key;
+
+        if (this.key === 'macbook') {
+          this.image = this.resolveUrl('macbook.png');
+        } else if (this.key === 'imac') {
+          this.image = this.resolveUrl('iMac.png');
+        }
+
+        this.saveChanges();
+      },
+
+      changeAddress: function(e) {
+        this.address = e.target.value;
+
+        // prefill nickname to match the address
+        if (!this.nickname) {
+          this.nickname = S(this.address).chompRight('.local');
+        }
+
+        this.saveChanges();
+      },
+
+      // SAVE HANDLERS
+      saveChanges: function() {
+        if (this.id !== -1) {
+          console.log('saving changes to disk...');
+        } else {
+          console.log('not saving changes disk yet.');
+        }
+      },
+
+      save: function() {
+        if (this.id === -1) {
+          console.log('creating new card...');
+
+          this.saveChanges();
+        }
+      }
+    });
+  </script>
+</dom-module>

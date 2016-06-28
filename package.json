@@ -8,12 +8,13 @@
     "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune --asar --app-category-type=public.app-category.productivity"
   },
   "author": "Nathan McWilliams",
-  "license": "ISC",
   "devDependencies": {
     "electron-packager": "^7.0.4",
     "electron-prebuilt": "^1.2.5",
     "eslint": "^2.13.1",
     "eslint-plugin-html": "^1.5.1",
-    "node-ping": "^0.1.0"
+    "ping": "git+https://github.com/danielzzz/node-ping.git",
+    "q": "^1.4.1",
+    "string": "^3.3.1"
   }
 }

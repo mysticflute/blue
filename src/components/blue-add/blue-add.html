@@ -1,0 +1,30 @@
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
+<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+
+<dom-module id='blue-add'>
+  <template>
+    <style>
+      :host {}
+    </style>
+
+    <div>
+      <paper-fab id='button' icon='add' on-tap='handleTap' title='add new computer'></paper-fab>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'blue-add',
+
+      highlight: function() {
+        //let ripple = this.$.button.getRipple();
+      },
+
+      handleTap: function() {
+        console.log('add');
+      }
+    });
+  </script>
+</dom-module>

@@ -1,12 +1,15 @@
+// application menu
+
 const electron = require('electron');
-const {remote} = electron;
+const {app, Menu} = electron;
+const name = 'Blue';
 
 const template = [
   {
-    label: 'Blue',
+    label: name,
     submenu: [
       {
-        label: 'About Blue',
+        label: 'About ' + name,
         role: 'about'
       },
       {
@@ -40,7 +43,7 @@ const template = [
       {
         label: 'Quit',
         accelerator: 'Command+Q',
-        click() { remote.app.quit(); }
+        click() { app.quit(); }
       }
     ]
   },
@@ -114,4 +117,4 @@ const template = [
   }
 ];
 
-module.exports = template;
+module.exports = Menu.buildFromTemplate(template);
