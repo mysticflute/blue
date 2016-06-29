@@ -5,7 +5,8 @@
 <link rel='import' href='../../../bower_components/paper-listbox/paper-listbox.html'>
 <link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
 
-<link rel='import' href='../blue-status-checker/blue-status-checker.html'>
+<link rel='import' href='../blue-status-ping/blue-status-ping.html'>
+<link rel='import' href='../blue-status-ssh/blue-status-ssh.html'>
 
 <dom-module id='blue-card'>
   <template>
@@ -38,7 +39,12 @@
 
         <!-- ADDRESS -->
         <paper-input label='address' value='{{address}}' on-change='changeAddress' required auto-validate>
-          <blue-status-checker suffix></blue-status-checker>
+          <blue-status-ping show-status-check suffix></blue-status-ping>
+        </paper-input>
+
+        <!-- USERNAME -->
+        <paper-input label='username' value='{{username}}' on-change='changeUsername' required auto-validate>
+          <blue-status-ssh address='{{address}}' show-status-check suffix></blue-status-ssh>
         </paper-input>
 
         <!-- NICKNAME -->
@@ -64,6 +70,10 @@
           type: 'String'
         },
         address: {
+          type: 'String',
+          notify: true
+        },
+        username: {
           type: 'String',
           notify: true
         },
@@ -106,6 +116,11 @@
           this.nickname = S(this.address).chompRight('.local');
         }
 
+        this.saveChanges();
+      },
+
+      changeUsername: function(e) {
+        this.username = e.target.value;
         this.saveChanges();
       },
 

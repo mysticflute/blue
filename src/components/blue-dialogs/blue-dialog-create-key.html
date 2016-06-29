@@ -1,0 +1,53 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/iron-icons/communication-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+
+<dom-module id="blue-dialog-create-key">
+  <template>
+    <style>
+      iron-icon {
+        color: #f09300;
+        display: inline-block;
+        margin: 0 3px;
+      }
+    </style>
+
+    <paper-dialog id='dialog' withBackdrop>
+      <h2>Please Create SSH Key</h2>
+      <p>
+        Unable to locate your public SSH key (~/.ssh/id_rsa.pub). This key is needed
+        to log into other computers and run commands. Create this key by following
+        <a href='#' on-tap='_openUrl'>
+          these wonderful instructions from Github.
+        </a>
+      </p>
+      <p>
+        Other keys using different names or types are not currently supported.
+        After successfully creating the key, you can click the key icon
+        <iron-icon icon='communication:vpn-key' class='inline notice'></iron-icon>
+        to copy it the other computer.
+      </p>
+      <div class='buttons'>
+        <paper-button dialog-dismiss autofocus>OK</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'blue-dialog-create-key',
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      _openUrl: function() {
+        const {shell} = require('electron');
+        shell.openExternal(
+          'https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/');
+      }
+    });
+  </script>
+</dom-module>

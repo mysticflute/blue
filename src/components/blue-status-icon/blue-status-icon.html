@@ -1,0 +1,81 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/paper-spinner/paper-spinner.html'>
+<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
+
+<dom-module id="blue-status-icon">
+  <template>
+    <style>
+      :host {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      iron-icon {
+        color: #9b9b9b;
+      }
+
+      iron-icon.highlight {
+        color: #0f9d58;
+      }
+
+      paper-spinner + iron-icon {
+        margin-left: 6px;
+      }
+
+      paper-spinner {
+        --paper-spinner-stroke-width: 1px;
+        visibility: hidden;
+        width: 18px;
+        height: 18px;
+      }
+
+      paper-spinner.visible  {
+        visibility: visible;
+      }
+
+      paper-tooltip ::content span {
+        display: block;
+        white-space: nowrap;
+      }
+
+      paper-tooltip ::content span + span {
+        margin-top: 5px;
+      }
+    </style>
+
+    <paper-spinner id='spinner' alt='checking...' active></paper-spinner>
+
+    <iron-icon icon='[[icon]]' id='icon'></iron-icon>
+
+    <paper-tooltip for='icon' offset='5'>
+      <div><content></content></div>
+    </paper-tooltip>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'blue-status-icon',
+
+      properties: {
+        icon: {
+          type: 'String',
+          value: 'android'
+        }
+      },
+
+      setIconStatus: function(status, isActive) {
+        this.toggleClass(status, isActive, this.$.icon);
+        this.updateStyles();
+      },
+
+      showSpinner: function() {
+        this.toggleClass('visible', true, this.$.spinner);
+      },
+
+      hideSpinner: function() {
+        this.toggleClass('visible', false, this.$.spinner);
+      }
+    });
+  </script>
+</dom-module>

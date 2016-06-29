@@ -38,6 +38,7 @@
     "page": false,
     "Polymer": false,
     "process": false,
-    "require": false
+    "require": false,
+    "Blue": false
   }
 }

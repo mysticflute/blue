@@ -1,0 +1,50 @@
+<link rel='import' href='../../../bower_components/paper-input/paper-input-addon-behavior.html'>
+<link rel='import' href='./blue-status-behavior.html'>
+
+<script>
+  window.Blue = window.Blue || {};
+
+  Blue.StatusInputBehaviorImpl = {
+    properties: {
+      currentValue: {
+        type: 'String'
+      }
+    },
+
+    /* called when the input element is updated (from paper input addon behavior) */
+    update: function(state) {
+      if (state.inputElement) {
+        this.newValue(state.inputElement.value);
+      } else {
+        this.onInvalidInput();
+      }
+    },
+
+    /* sets the new value and performs a check */
+    newValue: function(newValue) {
+      if (newValue.length < 3) {
+        this.onInvalidInput();
+      } else if (newValue !== this.currentValue) {
+        this.currentValue = newValue;
+        this.checkStatus();
+      }
+    },
+
+    /* implement and do a check on this.currentValue */
+    checkStatus: function() {
+      // override this
+      console.log('check not implemented!');
+    },
+
+
+    onInvalidInput: function() {
+      // override this
+    }
+  };
+
+  Blue.StatusInputBehavior = [
+    Polymer.PaperInputAddonBehavior,
+    Blue.StatusBehavior,
+    Blue.StatusInputBehaviorImpl
+  ];
+</script>

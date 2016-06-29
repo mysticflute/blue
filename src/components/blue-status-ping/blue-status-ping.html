@@ -1,0 +1,66 @@
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/iron-icons/notification-icons.html'>
+
+<link rel='import' href='../blue-status/blue-status-input-behavior.html'>
+<link rel='import' href='../blue-status/blue-status-styles.html'>
+<link rel='import' href='../blue-status-icon/blue-status-icon.html'>
+
+<dom-module id='blue-status-ping'>
+  <template>
+    <style include='blue-status-styles'>
+    </style>
+
+    <blue-status-icon icon='notification:wifi' id='icon'>
+      <span>Status: {{status}}</span>
+      <span>IP Address: {{ipAddress}}</span>
+    </blue-status-icon>
+  </template>
+
+  <script>
+    const network = require('./lib/network');
+
+    Polymer({
+      is: 'blue-status-ping',
+
+      properties: {
+        ipAddress: {
+          type: String,
+          notify: true,
+          readOnly: true,
+          value: 'n/a'
+        },
+        status: {
+          type: 'String',
+          notify: true,
+          readOnly: true,
+          value: 'unchecked' // unchecked, disconnected, connected
+        }
+      },
+
+      behaviors: [
+        Blue.StatusInputBehavior
+      ],
+
+      onInvalidInput: function() {
+        this.$.icon.setIconStatus('highlight', false);
+      },
+
+      checkStatus: function() {
+        if (this.showStatusCheck) {
+          this.$.icon.showSpinner();
+        }
+
+        network.ping(this.currentValue).then(response => {
+          this._setIpAddress(response.success ? response.ip : 'n/a');
+          this._setStatus(response.success ? 'connected' : 'disconnected');
+
+          this.$.icon.setIconStatus('highlight', response.success);
+
+          if (this.showStatusCheck) {
+            this.$.icon.hideSpinner();
+          }
+        });
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,131 @@
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icons/communication-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+
+<link rel='import' href='../blue-status/blue-status-input-behavior.html'>
+<link rel='import' href='../blue-status/blue-status-styles.html'>
+<link rel='import' href='../blue-dialogs/blue-dialog-create-key.html'>
+<link rel='import' href='../blue-dialogs/blue-dialog-copy-key.html'>
+<link rel='import' href='../blue-status-icon/blue-status-icon.html'>
+
+<dom-module id='blue-status-ssh'>
+  <template>
+    <style include='blue-status-styles'>
+      iron-icon {
+        color: #f09300;
+        cursor: pointer;
+      }
+
+      .hide {
+        display: none;
+      }
+    </style>
+
+    <!--  icon to show SSH connection status -->
+    <blue-status-icon icon='communication:vpn-key' id='icon'>
+      <span>SSH Status: {{status}}</span>
+    </blue-status-icon>
+
+    <!-- icon and dialog to inform user they need to create the SSH key -->
+    <iron-icon icon='warning' id='createKeyIcon' class='hide' on-tap='showCreateKey'></iron-icon>
+    <blue-dialog-create-key id='createKeyDialog'></blue-dialog-create-key>
+
+    <!-- icon and dialog allowing user to copy key to the other computer -->
+    <iron-icon icon='communication:vpn-key' id='copyKeyIcon' class='hide' on-tap='showCopyKey'></iron-icon>
+  </template>
+
+  <script>
+    const ssh = require('./lib/ssh');
+
+    Polymer({
+      is: 'blue-status-ssh',
+
+      properties: {
+        address: {
+          type: 'String'
+        },
+        status: {
+          type: 'String',
+          notify: true,
+          readOnly: true,
+          value: 'unverified' // unverified, verified
+        },
+        manageKey: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      behaviors: [
+        Blue.StatusInputBehavior
+      ],
+
+      ready: function() {
+        this.copyKeyDialog = null;
+      },
+
+      detached: function() {
+        if (this.copyKeyDialog != null) {
+          if (this.copyKeyDialog.parentNode) {
+            this.copyKeyDialog.parentNode.removeChild(this.copyKeyDialog);
+          }
+        }
+      },
+
+      onInvalidInput: function() {
+        this.$.icon.setIconStatus('highlight', false);
+      },
+
+      checkStatus: function() {
+        if (this.showStatusCheck) {
+          this.$.icon.showSpinner();
+        }
+
+        return ssh.checkConnection(this.currentValue, this.address).then(success => {
+          this._setStatus(success ? 'verified' : 'unverified');
+
+          if (this.showStatusCheck) {
+            this.$.icon.hideSpinner();
+          }
+
+          if (success) {
+            this.$.icon.setIconStatus('highlight', true);
+            this.toggleClass('hide', false, this.$.icon);
+            this.toggleClass('hide', true, this.$.copyKeyIcon);
+            this.toggleClass('hide', true, this.$.createKeyIcon);
+          } else if (!success && this.manageKey) {
+            ssh.checkPublicKeyExists().then((exists) => {
+              if (!exists) {
+                this.toggleClass('hide', true, this.$.icon);
+                this.toggleClass('hide', true, this.$.copyKeyIcon);
+                this.toggleClass('hide', false, this.$.createKeyIcon);
+              } else {
+                this.toggleClass('hide', true, this.$.icon);
+                this.toggleClass('hide', true, this.$.createKeyIcon);
+                this.toggleClass('hide', false, this.$.copyKeyIcon);
+              }
+            });
+          }
+        });
+      },
+
+      showCreateKey: function() {
+        this.$.createKeyDialog.open();
+      },
+
+      showCopyKey: function() {
+        // this is created dynamically because of issues with the paper-input it contains
+        // conflicting with the paper input this component may be inside of.
+        if (!this.copyKeyDialog) {
+          this.copyKeyDialog = document.createElement('blue-dialog-copy-key');
+          document.body.appendChild(this.copyKeyDialog);
+        }
+
+        this.copyKeyDialog.username = this.currentValue;
+        this.copyKeyDialog.address = this.address;
+        this.copyKeyDialog.open();
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,73 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
+
+<dom-module id="blue-dialog-copy-key">
+  <template>
+    <style>
+      paper-input {
+        display: inline-block;
+        min-width: 350px;
+      }
+
+      .input-suffix {
+        font-size: 13px;
+      }
+
+      .highlight {
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+
+    <paper-dialog id='dialog' on-iron-overlay-closed='_onClose'>
+      <h2>Copy Your SSH Key</h2>
+      <p>
+        To run commands on another computer it must have a copy of your public
+        key (~/.ssh/id_rsa.pub). You can manually copy your public key to the
+        other computer by following instructions you can find online. Otherwise
+        you can have it automatically copied below.
+      </p>
+      <p>
+        To automatically copy your key, you must provide the password for the user
+        <span class='highlight'>[[username]]</span> on the computer
+        <span class='highlight'>[[address]]</span>.
+        This password will not be stored or used in any other way but to copy
+        your public key.
+      </p>
+      <div>
+        <paper-input id='password' label='password' type='password'>
+          <div class='input-suffix' suffix>[[username]]@[[address]]</div>
+        </paper-input>
+      </div>
+      <div class='buttons'>
+        <paper-button dialog-dismiss>DONE</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'blue-dialog-copy-key',
+
+      properties: {
+        username: {
+          type: 'String'
+        },
+        address: {
+          type: 'String'
+        }
+      },
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      _onClose: function() {
+        this.$.password.value = '';
+      }
+    });
+  </script>
+</dom-module>
