@@ -8,13 +8,13 @@
   <template>
     <style>
       iron-icon {
-        color: #f09300;
+        color: var(--google-yellow-700);
         display: inline-block;
         margin: 0 3px;
       }
     </style>
 
-    <paper-dialog id='dialog' withBackdrop>
+    <paper-dialog id='dialog' on-iron-overlay-closed='_onClose'>
       <h2>Please Create SSH Key</h2>
       <p>
         Unable to locate your public SSH key (~/.ssh/id_rsa.pub). This key is needed
@@ -47,6 +47,10 @@
         const {shell} = require('electron');
         shell.openExternal(
           'https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/');
+      },
+
+      _onClose: function() {
+        this.fire('dialog-closed');
       }
     });
   </script>

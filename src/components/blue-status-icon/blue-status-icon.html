@@ -16,7 +16,7 @@
       }
 
       iron-icon.highlight {
-        color: #0f9d58;
+        color: var(--google-green-500);
       }
 
       paper-spinner + iron-icon {
@@ -25,13 +25,8 @@
 
       paper-spinner {
         --paper-spinner-stroke-width: 1px;
-        visibility: hidden;
         width: 18px;
         height: 18px;
-      }
-
-      paper-spinner.visible  {
-        visibility: visible;
       }
 
       paper-tooltip ::content span {
@@ -43,8 +38,8 @@
         margin-top: 5px;
       }
     </style>
-
-    <paper-spinner id='spinner' alt='checking...' active></paper-spinner>
+<!-- todo fix active -->
+    <paper-spinner id='spinner' alt='checking...'></paper-spinner>
 
     <iron-icon icon='[[icon]]' id='icon'></iron-icon>
 
@@ -70,11 +65,11 @@
       },
 
       showSpinner: function() {
-        this.toggleClass('visible', true, this.$.spinner);
+        this.$.spinner.active = true;
       },
 
       hideSpinner: function() {
-        this.toggleClass('visible', false, this.$.spinner);
+        this.$.spinner.active = false;
       }
     });
   </script>

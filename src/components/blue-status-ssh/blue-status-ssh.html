@@ -13,7 +13,7 @@
   <template>
     <style include='blue-status-styles'>
       iron-icon {
-        color: #f09300;
+        color: var(--google-yellow-700);
         cursor: pointer;
       }
 
@@ -28,16 +28,26 @@
     </blue-status-icon>
 
     <!-- icon and dialog to inform user they need to create the SSH key -->
-    <iron-icon icon='warning' id='createKeyIcon' class='hide' on-tap='showCreateKey'></iron-icon>
+    <iron-icon
+      icon='warning'
+      id='createKeyIcon'
+      class='hide'
+      title='click me!'
+      on-tap='showCreateKey'>
+    </iron-icon>
     <blue-dialog-create-key id='createKeyDialog'></blue-dialog-create-key>
 
     <!-- icon and dialog allowing user to copy key to the other computer -->
-    <iron-icon icon='communication:vpn-key' id='copyKeyIcon' class='hide' on-tap='showCopyKey'></iron-icon>
+    <iron-icon
+      icon='communication:vpn-key'
+      id='copyKeyIcon'
+      class='hide'
+      title='click me!'
+      on-tap='showCopyKey'>
+    </iron-icon>
   </template>
 
   <script>
-    const ssh = require('./lib/ssh');
-
     Polymer({
       is: 'blue-status-ssh',
 
@@ -61,6 +71,10 @@
         Blue.StatusInputBehavior
       ],
 
+      listeners: {
+        'dialog-closed': 'onDialogClosed'
+      },
+
       ready: function() {
         this.copyKeyDialog = null;
       },
@@ -73,11 +87,19 @@
         }
       },
 
+      onDialogClosed: function() {
+        // when dialogs are closed, the user has probably taken an action like
+        // creating a key or copy a key, so check the status again.
+        this.checkStatus();
+      },
+
       onInvalidInput: function() {
         this.$.icon.setIconStatus('highlight', false);
       },
 
       checkStatus: function() {
+        const ssh = require('./lib/ssh');
+
         if (this.showStatusCheck) {
           this.$.icon.showSpinner();
         }
@@ -97,13 +119,17 @@
           } else if (!success && this.manageKey) {
             ssh.checkPublicKeyExists().then((exists) => {
               if (!exists) {
+                // show create key
                 this.toggleClass('hide', true, this.$.icon);
                 this.toggleClass('hide', true, this.$.copyKeyIcon);
                 this.toggleClass('hide', false, this.$.createKeyIcon);
+                this.$.createKeyIcon.classList.add('animated', 'jello');
               } else {
+                // show copy key
                 this.toggleClass('hide', true, this.$.icon);
                 this.toggleClass('hide', true, this.$.createKeyIcon);
                 this.toggleClass('hide', false, this.$.copyKeyIcon);
+                this.$.copyKeyIcon.classList.add('animated', 'jello');
               }
             });
           }
@@ -119,6 +145,7 @@
         // conflicting with the paper input this component may be inside of.
         if (!this.copyKeyDialog) {
           this.copyKeyDialog = document.createElement('blue-dialog-copy-key');
+          this.listen(this.copyKeyDialog, 'dialog-closed', 'onDialogClosed');
           document.body.appendChild(this.copyKeyDialog);
         }
 

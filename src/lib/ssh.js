@@ -6,7 +6,6 @@ const path = require ('path');
 module.exports = {
   checkConnection: function(username, address) {
     return Q.fcall(() => {
-      console.log('ssh', username, address);
       return false;
     });
   },
@@ -27,5 +26,16 @@ module.exports = {
     });
 
     return deferred.promise;
+  },
+
+  sendPublicKey: function(username, password, address) {
+    return Q.delay(2000).then(() => {
+      console.log('sending public key', username, password, address);
+
+      // 1 check for existance of authorized_keys
+      // 2 check if ends in new line
+      // 3 check if contains exact string
+      return false;
+    });
   }
 };
