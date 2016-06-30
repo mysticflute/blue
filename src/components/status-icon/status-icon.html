@@ -3,7 +3,7 @@
 <link rel='import' href='../../../bower_components/paper-spinner/paper-spinner.html'>
 <link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
 
-<dom-module id="blue-status-icon">
+<dom-module id="status-icon">
   <template>
     <style>
       :host {
@@ -38,7 +38,7 @@
         margin-top: 5px;
       }
     </style>
-<!-- todo fix active -->
+
     <paper-spinner id='spinner' alt='checking...'></paper-spinner>
 
     <iron-icon icon='[[icon]]' id='icon'></iron-icon>
@@ -50,7 +50,7 @@
 
   <script>
     Polymer({
-      is: 'blue-status-icon',
+      is: 'status-icon',
 
       properties: {
         icon: {

@@ -1,4 +1,5 @@
-// application menu
+// menu.js
+// main application menu, used by electron's main process in main.js
 
 const electron = require('electron');
 const {app, Menu} = electron;

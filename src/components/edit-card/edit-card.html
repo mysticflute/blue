@@ -5,10 +5,10 @@
 <link rel='import' href='../../../bower_components/paper-listbox/paper-listbox.html'>
 <link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
 
-<link rel='import' href='../blue-status-ping/blue-status-ping.html'>
-<link rel='import' href='../blue-status-ssh/blue-status-ssh.html'>
+<link rel='import' href='../status-icon-ping/status-icon-ping.html'>
+<link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
 
-<dom-module id='blue-card'>
+<dom-module id='edit-card'>
   <template>
     <style>
       :host {
@@ -39,16 +39,16 @@
 
         <!-- ADDRESS -->
         <paper-input label='address' value='{{address}}' on-change='changeAddress' required auto-validate>
-          <blue-status-ping show-status-check suffix></blue-status-ping>
+          <status-icon-ping show-status-check suffix></status-icon-ping>
         </paper-input>
 
         <!-- USERNAME -->
         <paper-input label='username' value='{{username}}' on-change='changeUsername' required auto-validate>
-          <blue-status-ssh address='{{address}}' show-status-check suffix></blue-status-ssh>
+          <status-icon-ssh address='{{address}}' show-status-check suffix></status-icon-ssh>
         </paper-input>
 
         <!-- NICKNAME -->
-        <paper-input label='nickname' value='{{nickname}}'></paper-input>
+        <paper-input label='nickname' value='{{nickname}}' on-change='changeNickname'></paper-input>
       </div>
     </paper-card>
   </template>
@@ -57,7 +57,7 @@
     const S = require('string');
 
     Polymer({
-      is: 'blue-card',
+      is: 'edit-card',
 
       // PROPERTIES
       properties: {
@@ -121,6 +121,11 @@
 
       changeUsername: function(e) {
         this.username = e.target.value;
+        this.saveChanges();
+      },
+
+      changeNickname: function(e) {
+        this.nickname = e.target.value;
         this.saveChanges();
       },
 

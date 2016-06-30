@@ -1,3 +1,10 @@
+<!--
+  Dialogs: copy ssh key
+
+  This dialog informs the user they need to copy their public ssh key
+  to the remote machine, and provides an option to automatically do so.
+ -->
+
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
@@ -6,11 +13,10 @@
 <link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
 <link rel='import' href='../../../bower_components/paper-spinner/paper-spinner.html'>
 
-<dom-module id="blue-dialog-copy-key">
+<dom-module id="dialog-copy-key">
   <template>
     <style>
       strong {
-        font-weight: bold;
         color: #333;
       }
 
@@ -97,7 +103,7 @@
 
   <script>
     Polymer({
-      is: 'blue-dialog-copy-key',
+      is: 'dialog-copy-key',
 
       properties: {
         username: {
@@ -130,21 +136,22 @@
         this.$.send.disabled = true;
         this.$.spinner.active = true;
 
-        ssh.sendPublicKey(this.username, this.$.password.value, this.address).then((success, error) => {
+        ssh.sendPublicKey(this.address, this.username, this.$.password.value)
+        .then(() => {
           this.$.spinner.active = false;
-
-          if (success) {
-            this.$.resultIcon.icon = 'done';
-            this.$.resultIcon.title = 'successfully sent key!';
-            this.$.send.disabled = true;
-          } else {
-            this.$.resultIcon.icon = 'error';
-            this.$.resultIcon.title = 'error sending public key: ' + error;
-            this.$.send.disabled = this.$.password.value == '';
-          }
-
-          this.toggleClass('success', success, this.$.resultIcon);
+          this.$.resultIcon.icon = 'done';
+          this.$.resultIcon.title = 'successfully sent key!';
+          this.$.send.disabled = true;
+          this.toggleClass('success', true, this.$.resultIcon);
           this.toggleClass('hidden', false, this.$.resultIcon);
+        }, (error) => {
+          this.$.spinner.active = false;
+          this.$.resultIcon.icon = 'error';
+          this.$.resultIcon.title = error;
+          this.$.send.disabled = this.$.password.value == '';
+          this.toggleClass('success', false, this.$.resultIcon);
+          this.toggleClass('hidden', false, this.$.resultIcon);
+
         });
       }
     });

@@ -1,10 +1,16 @@
+<!--
+  Dialogs: create ssh key
+
+  This dialog informs the user that they need to create an ssh key.
+ -->
+
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel='import' href='../../../bower_components/iron-icons/communication-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
 <link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
 <link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
 
-<dom-module id="blue-dialog-create-key">
+<dom-module id="dialog-create-key">
   <template>
     <style>
       iron-icon {
@@ -37,7 +43,7 @@
 
   <script>
     Polymer({
-      is: 'blue-dialog-create-key',
+      is: 'dialog-create-key',
 
       open: function() {
         this.$.dialog.open();

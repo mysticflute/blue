@@ -2,12 +2,12 @@
   "name": "blue",
   "version": "0.1.0",
   "description": "share peripherals and screens between macs",
+  "author": "Nathan McWilliams",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune --asar --app-category-type=public.app-category.productivity"
   },
-  "author": "Nathan McWilliams",
   "devDependencies": {
     "electron-packager": "^7.0.4",
     "electron-prebuilt": "^1.2.5",
@@ -15,6 +15,7 @@
     "eslint-plugin-html": "^1.5.1",
     "ping": "git+https://github.com/danielzzz/node-ping.git",
     "q": "^1.4.1",
+    "ssh2": "^0.5.0",
     "string": "^3.3.1"
   }
 }

@@ -17,8 +17,11 @@
       "single"
     ],
     "semi": [
-      "error",
+      "warn",
       "always"
+    ],
+    "no-unused-vars": [
+      "warn"
     ]
   },
   "env": {

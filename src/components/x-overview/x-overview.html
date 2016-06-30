@@ -1,9 +1,10 @@
 <link rel='import' href='../../../bower_components/polymer/polymer.html'>
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel='import' href='../blue-add/blue-add.html'>
-<link rel='import' href='../blue-card/blue-card.html'>
 
-<dom-module id='blue-overview'>
+<link rel='import' href='../x-add/x-add.html'>
+<link rel='import' href='../edit-card/edit-card.html'>
+
+<dom-module id='x-overview'>
   <style include="iron-flex"></style>
 
   <template>
@@ -20,15 +21,15 @@
     </style>
 
     <div class="container layout horizontal">
-      <blue-card></blue-card>
-      <blue-add id='add'></blue-add>
+      <edit-card></edit-card>
+      <x-add id='add'></x-add>
     </div>
 
   </template>
 
   <script>
     Polymer({
-      is: 'blue-overview',
+      is: 'x-overview',
       ready: function() {
         this.$.add.highlight();
       }

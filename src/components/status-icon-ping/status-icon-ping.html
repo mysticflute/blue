@@ -1,26 +1,31 @@
+<!--
+  Status Icons: ping connection
+
+  This component shows a an icon indication the ability to ping the remote
+  computer. The icon is highlighted when the connection is verified.
+-->
+
 <link rel='import' href='../../../bower_components/polymer/polymer.html'>
 <link rel='import' href='../../../bower_components/iron-icons/notification-icons.html'>
 
-<link rel='import' href='../blue-status/blue-status-input-behavior.html'>
-<link rel='import' href='../blue-status/blue-status-styles.html'>
-<link rel='import' href='../blue-status-icon/blue-status-icon.html'>
+<link rel='import' href='../status-icon/status-icon-input-behavior.html'>
+<link rel='import' href='../status-icon/status-icon-styles.html'>
+<link rel='import' href='../status-icon/status-icon.html'>
 
-<dom-module id='blue-status-ping'>
+<dom-module id='status-icon-ping'>
   <template>
-    <style include='blue-status-styles'>
+    <style include='status-icon-styles'>
     </style>
 
-    <blue-status-icon icon='notification:wifi' id='icon'>
+    <status-icon icon='notification:wifi' id='icon'>
       <span>Status: {{status}}</span>
       <span>IP Address: {{ipAddress}}</span>
-    </blue-status-icon>
+    </status-icon>
   </template>
 
   <script>
-    const network = require('./lib/network');
-
     Polymer({
-      is: 'blue-status-ping',
+      is: 'status-icon-ping',
 
       properties: {
         ipAddress: {
@@ -38,7 +43,7 @@
       },
 
       behaviors: [
-        Blue.StatusInputBehavior
+        Blue.StatusIconInputBehavior
       ],
 
       onInvalidInput: function() {
@@ -46,11 +51,14 @@
       },
 
       checkStatus: function() {
+        const network = require('./lib/network');
+
         if (this.showStatusCheck) {
           this.$.icon.showSpinner();
         }
 
-        network.ping(this.currentValue).then(response => {
+        network.ping(this.currentValue)
+        .then(response => {
           this._setIpAddress(response.success ? response.ip : 'n/a');
           this._setStatus(response.success ? 'connected' : 'disconnected');
 
