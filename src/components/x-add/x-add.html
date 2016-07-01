@@ -10,7 +10,7 @@
     </style>
 
     <div>
-      <paper-fab id='button' icon='add' on-tap='handleTap' title='add new computer'></paper-fab>
+      <paper-fab id='button' icon='add' title='Add a New Computer Connection'></paper-fab>
     </div>
   </template>
 
@@ -18,12 +18,8 @@
     Polymer({
       is: 'x-add',
 
-      highlight: function() {
-        //let ripple = this.$.button.getRipple();
-      },
-
-      handleTap: function() {
-        console.log('add');
+      glisten: function() {
+        this.$.button.getRipple().simulatedRipple();
       }
     });
   </script>

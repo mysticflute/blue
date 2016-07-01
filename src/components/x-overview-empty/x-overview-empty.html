@@ -1,0 +1,79 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel='import' href='../x-add/x-add.html'>
+<link rel='import' href='../edit-card/edit-card.html'>
+
+<dom-module id="x-overview-empty">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+        height: 100%;
+      }
+
+      .layer1, .layer2 {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .layer1 {
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 22%;
+      }
+
+      .layer2 {
+        z-index: 15;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .welcome {
+        color: #bbb;
+        font-size: 45px;
+        margin-bottom: 18px;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+        /*text-shadow: rgba(255,255,255,0.5) 0px 3px 3px;*/
+      }
+    </style>
+
+    <div id='layer1' class='layer1'>
+      <div id='welcome' class='welcome animated fadeInDown'>
+        Welcome to Blue
+      </div>
+      <x-add id='add' on-tap='newCard'></x-add>
+    </div>
+
+    <div id='layer2' class='layer2' hidden>
+      <edit-card id='card'></edit-card>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'x-overview-empty',
+
+      attached: function() {
+        const Q = require('Q');
+        Q.delay(1100).then(() => {
+          this.$.add.classList.add('animated','rubberBand');
+        });
+      },
+
+      newCard: function() {
+        const Q = require('Q');
+        this.$.welcome.classList.add('fadeOutUp');
+        this.$.add.classList.add('zoomOut');
+
+        Q.delay(920).then(() => {
+          this.$.layer2.hidden = false;
+          this.$.card.classList.add('animated', 'flipInY');
+        });
+      }
+    });
+  </script>
+</dom-module>
