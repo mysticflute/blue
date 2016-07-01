@@ -54,8 +54,6 @@
   </template>
 
   <script>
-    const S = require('string');
-
     Polymer({
       is: 'edit-card',
 
@@ -109,6 +107,7 @@
       },
 
       changeAddress: function(e) {
+        const S = require('string');
         this.address = e.target.value;
 
         // prefill nickname to match the address

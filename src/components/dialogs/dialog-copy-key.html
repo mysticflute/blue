@@ -121,6 +121,7 @@
       _onClose: function() {
         this.$.password.value = '';
         this.$.spinner.active = false;
+        this.$.send.disabled = true;
         this.fire('dialog-closed');
       },
 
@@ -151,7 +152,6 @@
           this.$.send.disabled = this.$.password.value == '';
           this.toggleClass('success', false, this.$.resultIcon);
           this.toggleClass('hidden', false, this.$.resultIcon);
-
         });
       }
     });

@@ -117,7 +117,7 @@
           this.$.icon.showSpinner();
         }
 
-        ssh.checkConnection(this.currentValue, this.address)
+        ssh.checkConnection(this.address,this.currentValue)
         .then(verified => {
           this._setStatus(verified ? 'verified' : 'unverified');
 
@@ -131,7 +131,7 @@
             this.$.copyKeyIcon.classList.add('hide');
             this.$.createKeyIcon.classList.add('hide');
           } else if (!verified && this.manageKey) {
-            ssh.checkPublicKeyExists()
+            ssh.checkKeyExists()
             .then(exists => {
               if (!exists) {
                 // show create key

@@ -5,58 +5,90 @@ const Q = require('q');
 const fs = require('fs');
 const os = require('os');
 const path = require ('path');
-const remote = require ('./remote');
+const Session = require ('./session');
+
+const privateKey = path.join(os.homedir(), '.ssh', 'id_rsa');
+const publicKey = path.join(os.homedir(), '.ssh', 'id_rsa.pub');
 
 /**
   checks that the ssh connection can be established with key authentication.
-  @return promise(boolean)
+  @returns promise(boolean)
 */
 exports.checkConnection = function(host, username) {
-  return Q.fcall(() => {
+  let session = new Session();
+
+  // check that the private key exists, then make a ssh connection
+  return Q.nfcall(fs.stat, privateKey)
+  .then(() => {
+    return session.connect(host, username);
+  })
+  .then(() => {
+    session.end();
+    return true;
+  }).fail(() => {
     return false;
   });
 };
 
 /**
-  checks that the public ssh key exists on this machine.
-  @return promise(boolean)
+  checks that the private/public ssh key pair exists on this machine.
+  @returns promise(boolean)
 */
-exports.checkPublicKeyExists = function() {
-  const rsa = path.join(os.homedir(), '.ssh', 'id_rsa.pub');
-
-  let deferred = Q.defer();
-
-  fs.stat(rsa, err => {
-    if (err === null) {
-      deferred.resolve(true);
-    } else if (err.code === 'ENOENT') {
-      deferred.resolve(false);
+exports.checkKeyExists = function() {
+  return Q.all([Q.nfcall(fs.stat, privateKey), Q.nfcall(fs.stat, publicKey)])
+  .then(() => {
+    return true;
+  }, (err) => {
+    if (err.code == 'ENOENT') {
+      return false;
     } else {
-      deferred.reject(new Error(err));
+      throw err;
     }
   });
-
-  return deferred.promise;
 };
 
 /**
   attempts to copy the public ssh key to a remote computer's .authorized_keys,
   if not already present.
-  @return promise
+  @returns promise
 */
 exports.sendPublicKey = function(host, username, password) {
-  return Q.delay(1500) // the delay is just for UI effect
+  const session = new Session();
+  let publicKeyContent = '';
+
+  // the delay is just for UI effect
+  return Q.delay(1500)
   .then(() => {
-    return remote.privileged(host, username, password);
+    // read public key
+    return Q.nfcall(fs.readFile, publicKey, 'utf8');
   })
-  .then(connection => {
-    return remote.exec(connection, 'ls');
+  .then((content) => {
+    publicKeyContent = content.trim(); // we don't want the newline at the end
+    return session.connect(host, username, password);
   })
-  .then(result => {
-    result.connection.end();
+  .then(() => {
+    return session.cd('~/.ssh');
+  })
+  .then(() => {
+    // check if the authorized_keys file exists
+    return session.exec('cat authorized_keys');
+  })
+  .then(response => {
+    if (response.includes('No such file or directory')) {
+      // the file doesn't exist. create it, then append public key
+      return session.exec('touch authorized_keys', `echo "${publicKeyContent}" >> authorized_keys`);
+    } else {
+      // the file does exist. first check that it doesn't the key already
+      if (!response.includes(publicKeyContent)) {
+        // ensure there is a new line then append public key
+        if (response.charAt(response.length - 1) != '\n') {
+          publicKeyContent = '\n' + publicKeyContent;
+        }
+        return session.exec(`echo "${publicKeyContent}" >> authorized_keys`);
+      }
+    }
+  })
+  .then(() => {
+    session.end();
   });
 };
-
-// 1 check for existance of authorized_keys
-// 2 check if ends in new line
-// 3 check if contains exact string

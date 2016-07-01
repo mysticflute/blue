@@ -23,15 +23,19 @@
     <paper-dialog id='dialog' on-iron-overlay-closed='_onClose'>
       <h2>Please Create SSH Key</h2>
       <p>
-        Unable to locate your public SSH key (~/.ssh/id_rsa.pub). This key is needed
-        to log into other computers and run commands. Create this key by following
+        Unable to locate your SSH key (~/.ssh/id_rsa and ~/.ssh/id_rsa.pub). These files
+        are needed to log into other computers and run commands. Create them by following
         <a href='#' on-tap='_openUrl'>
           these wonderful instructions from Github.
         </a>
       </p>
       <p>
+        Be sure to add your key to the ssh-agent, as currently this app <strong>does
+        not support storing or prompting you for your SSH key passphrase.</strong>
+      </p>
+      <p>
         Other keys using different names or types are not currently supported.
-        After successfully creating the key, you can click the key icon
+        After successfully creating your SSH key, you can click the key icon
         <iron-icon icon='communication:vpn-key' class='inline notice'></iron-icon>
         to copy it the other computer.
       </p>
