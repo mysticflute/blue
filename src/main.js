@@ -10,7 +10,7 @@ function createWindow() {
   Menu.setApplicationMenu(require('./lib/menu'));
 
   // create the browser window
-  win = new BrowserWindow({width: 900, height: 600});
+  win = new BrowserWindow({width: 900, height: 700});
 
   // load the main page of the app
   win.loadURL(`file://${__dirname}/app.html`);

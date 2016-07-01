@@ -4,6 +4,8 @@
 <link rel='import' href='../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html'>
 <link rel='import' href='../../../bower_components/paper-listbox/paper-listbox.html'>
 <link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+
 
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
@@ -13,10 +15,22 @@
     <style>
       :host {
         width: 300px;
-
         --paper-input-container-underline: {
           background: #aaa;
         }
+      }
+
+      .save {
+        --paper-button-ink-color: var(--paper-indigo-100);
+      }
+
+      .save:hover {
+        color: var(--paper-pink-a200);
+      }
+
+      .card-actions {
+        border: 0;
+        text-align: center;
       }
 
       paper-dropdown-menu {
@@ -49,6 +63,10 @@
 
         <!-- NICKNAME -->
         <paper-input label='nickname' value='{{nickname}}' on-change='changeNickname'></paper-input>
+      </div>
+
+      <div class='card-actions'>
+        <paper-button class='save'>Save</paper-button>
       </div>
     </paper-card>
   </template>
