@@ -19,34 +19,61 @@
         }
       }
 
-      .save {
-        --paper-button-ink-color: var(--paper-indigo-100);
+      paper-card {
+        width: 100%;
       }
 
-      .save:hover {
-        color: var(--paper-pink-a200);
+      header {
+        padding: 25px 45px 0;
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .card-actions {
-        border: 0;
-        text-align: center;
+      img {
+        max-width: 100%;
+      }
+
+      img.macbook {
+        max-width: 80%;
+      }
+
+      img.imac {
+        max-width: 90%;
       }
 
       paper-dropdown-menu {
         width: 100%;
       }
+
+      paper-button {
+        --paper-button-ink-color: var(--paper-indigo-100);
+      }
+
+      paper-button:hover {
+        color: var(--paper-pink-a200);
+      }
+
+      footer {
+        border: 0;
+        text-align: center;
+      }
     </style>
 
-    <paper-card image='{{image}}'>
-      <!-- <img src='iMac.png' width='300' height='225'/> -->
+    <paper-card>
+      <header>
+        <img src='{{image}}' class$='{{type}}'/>
+      </header>
+
       <div class='card-content'>
         <!-- TYPE -->
         <paper-dropdown-menu label='type' on-iron-select='changeType' noink>
-          <paper-listbox class='dropdown-content'>
-            <paper-item data-key='imac'>iMac</paper-item>
+          <paper-listbox class='dropdown-content' selected='{{selectedTypeIndex(typeInfo, type)}}'>
             <paper-item data-key='macbook'>Macbook</paper-item>
+            <paper-item data-key='imac'>iMac</paper-item>
             <paper-item data-key='macpro'>Mac Pro</paper-item>
-            <paper-item data-key='mac mini'>Mac Mini</paper-item>
+            <paper-item data-key='macmini'>Mac Mini</paper-item>
           </paper-listbox>
         </paper-dropdown-menu>
 
@@ -64,9 +91,9 @@
         <paper-input label='nickname' value='{{nickname}}' on-change='changeNickname'></paper-input>
       </div>
 
-      <div class='card-actions'>
-        <paper-button class='save'>Save</paper-button>
-      </div>
+      <footer class='card-actions'>
+        <paper-button>Save</paper-button>
+      </footer>
     </paper-card>
   </template>
 
@@ -82,7 +109,8 @@
           value: -1
         },
         type: {
-          type: 'String'
+          type: 'String',
+          value: 'macbook'
         },
         address: {
           type: 'String',
@@ -98,28 +126,32 @@
         },
         image: {
           type: 'String',
-          notify: true,
-          value: function() { return this.resolveUrl('macbook.png'); }
+          readOnly: true,
+          computed: 'selectedTypeImage(typeInfo, type)'
+        },
+        typeInfo: {
+          type: Object,
+          value: {
+            'macbook': {index: 0, path: 'apple/macbook-original.png'},
+            'imac': {index: 1, path: 'apple/imac-original.png'},
+            'macpro': {index: 2, path: 'apple/macpro-small.png'},
+            'macmini': {index: 3, path: 'apple/macmini-medium.png'}
+          }
         }
       },
 
-      // LIFECYCLE CALLBACKS
-      ready: function() {
+      // COMPUTED BINDINGS
+      selectedTypeIndex: function(typeInfo, type) {
+        return typeInfo[type].index;
+      },
+
+      selectedTypeImage: function(typeInfo, type) {
+        return this.resolveUrl(typeInfo[type].path);
       },
 
       // INPUT HANDLERS
       changeType: function(e, detail) {
-        let item = detail.item;
-        let key = item.dataset.key;
-
-        this.key = key;
-
-        if (this.key === 'macbook') {
-          this.image = this.resolveUrl('macbook.png');
-        } else if (this.key === 'imac') {
-          this.image = this.resolveUrl('iMac.png');
-        }
-
+        this.type = detail.item.dataset.key;
         this.saveChanges();
       },
 
@@ -156,7 +188,7 @@
 
       save: function() {
         if (this.id === -1) {
-          console.log('creating new card...');
+          console.info('creating new card...');
 
           this.saveChanges();
         }
