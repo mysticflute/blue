@@ -1,0 +1,137 @@
+<!--
+  Dialogs: new computer
+
+  This shows some information when computers are created/saved for the first time.
+  It also handles setting up config on the new computer, such as copying the blueutil
+  script.
+ -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+
+<dom-module id="dialog-new-computer">
+  <template>
+    <style>
+      h3 {
+        font-size: 16px;
+        color: #777;
+      }
+
+      h3:first-child {
+        margin-top: 5px;
+      }
+
+      h3 + p {
+        margin-top: 10px;
+      }
+    </style>
+
+    <paper-dialog id='dialog' on-iron-overlay-closed='_onClose' modal>
+      <h2>Final Setup</h2>
+      <p>
+        You're almost done setting up your new connection. There are just a few more
+        things to go over.
+      </p>
+
+      <paper-dialog-scrollable>
+        <h3>Maintaining Connection</h3>
+        <p>
+          All computers must be on the same network and SSH access is required to send
+          commands. It's assumed your SSH key is passphrase protected but
+          we will never ask you for your passphrase. This means the
+          <a href='#' on-tap='_sshAgentUrl'>ssh agent</a>
+          must be running and must have your SSH key saved.
+        </p>
+
+        <h3>Security</h3>
+        <p>
+          Please remember that this app will run commands remotely.
+          Some actions may be irreversible or may require direct access to the computer
+          to reverse. We will never run any commands requiring privileged access without
+          prompting you for the password, and the password will never be stored.
+        </p>
+
+        <h3>Bluetooth</h3>
+        <p>
+          This app provides remote control over bluetooth peripherals. In rare cases you
+          may need physical access to the computer and/or physical peripherals if
+          the network connection cannot be established while bluetooth happens
+          to be turned off.
+        </p>
+
+        <h3>Bluetooth Keyboards and Mice</h3>
+        <p>
+          This app allows you to switch the same bluetooth keyboard and mouse/trackpad
+          between multiple computers. It works by turning bluetooth off on all
+          but the active computer, and OS X and the devices themselves handle the rest.
+          In order for this to work you must take several steps beforehand:
+        </p>
+        <ol>
+          <li>If you have already paired the bluetooth periperhals to any computers, remove
+            them from all computers via OS X system preferences.
+          </li>
+          <li>Turn off bluetooth for each computer via OS X system preferences.</li>
+          <li>Turn bluetooth on for one computer, then pair it to the peripherals.
+            Once paired, turn bluetooth back off. Repeat this step for all computers.</li>
+          <li>Turn bluetooth back on for one of the computers. Confirm that the bluetooth
+            peripherals automatically reconnect and are usable.</li>
+        </ol>
+        <p>
+          When switching between computers, you may need to press the button on the
+          bluetooth peripheral to wake it up and have it automatically connect to the
+          active computer. Typing or clicking also works.
+        </p>
+
+        <h3>Configuration Files</h3>
+        <p>
+          In order to properly run commands and control bluetooth, several configuration
+          files and scripts will be placed on the remote computer. These will be placed
+          under ~/.blueconfig/. This includes a 3rd-party script called
+          <a href='#' on-tap='_blueUtilUrl'>blue util</a>.
+        </p>
+
+        <h3>Confirming Status</h3>
+        <p>
+          Once saved, you will be able to view the connection status by
+          looking at the status icons. A green icon means the connection is
+          established. A grey icon means the connection cannot be established.
+          You can hover over each icon for more information. While the application
+          is open the connection status will continually refresh at an appropriate
+          interval.
+        </p>
+      </paper-dialog-scrollable>
+
+      <div class='buttons'>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Ok</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dialog-new-computer',
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      _onClose: function() {
+        this.fire('dialog-closed', this.$.dialog.closingReason);
+      },
+
+      _sshAgentUrl: function() {
+        const {shell} = require('electron');
+        shell.openExternal(
+          'https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent/');
+      },
+
+      _blueUtilUrl: function() {
+        const {shell} = require('electron');
+        shell.openExternal('http://www.frederikseiffert.de/blueutil/');
+      }
+    });
+  </script>
+</dom-module>

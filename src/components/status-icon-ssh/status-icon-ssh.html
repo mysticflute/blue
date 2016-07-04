@@ -93,10 +93,8 @@
       },
 
       detached: function() {
-        if (this.copyKeyDialog != null) {
-          if (this.copyKeyDialog.parentNode) {
-            this.copyKeyDialog.parentNode.removeChild(this.copyKeyDialog);
-          }
+        if (this.copyKeyDialog != null && this.copyKeyDialog.parentNode) {
+          Polymer.dom(document.body).removeChild(this.copyKeyDialog);
         }
       },
 
@@ -156,12 +154,11 @@
       },
 
       showCopyKey: function() {
-        // this is created dynamically because of issues with the paper-input it contains
-        // conflicting with the paper input this component may be inside of.
+        // TODO find a better way to open dialogs at body level
         if (!this.copyKeyDialog) {
           this.copyKeyDialog = document.createElement('dialog-copy-key');
           this.listen(this.copyKeyDialog, 'dialog-closed', 'onDialogClosed');
-          document.body.appendChild(this.copyKeyDialog);
+          Polymer.dom(document.body).appendChild(this.copyKeyDialog);
         }
 
         this.copyKeyDialog.username = this.currentValue;

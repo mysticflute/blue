@@ -16,6 +16,7 @@ const publicKey = path.join(os.homedir(), '.ssh', 'id_rsa.pub');
 */
 exports.checkConnection = function(host, username) {
   let session = new Session();
+  session.disableLogging();
 
   // check that the private key exists, then make a ssh connection
   return Q.nfcall(fs.stat, privateKey)

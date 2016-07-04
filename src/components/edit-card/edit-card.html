@@ -8,6 +8,7 @@
 
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
+<link rel='import' href='../dialogs/dialog-new-computer.html'>
 
 <dom-module id='edit-card'>
   <template>
@@ -92,7 +93,7 @@
       </div>
 
       <footer class='card-actions'>
-        <paper-button>Save</paper-button>
+        <paper-button on-tap='save'>Save</paper-button>
       </footer>
     </paper-card>
   </template>
@@ -140,6 +141,13 @@
         }
       },
 
+      // LIFECYCLE CALLBACKS
+      detached: function() {
+        if (this.newComputerDialog != null && this.newComputerDialog.parentNode) {
+          Polymer.dom(document.body).removeChild(this.newComputerDialog);
+        }
+      },
+
       // COMPUTED BINDINGS
       selectedTypeIndex: function(typeInfo, type) {
         return typeInfo[type].index;
@@ -152,7 +160,6 @@
       // INPUT HANDLERS
       changeType: function(e, detail) {
         this.type = detail.item.dataset.key;
-        this.saveChanges();
       },
 
       changeAddress: function(e) {
@@ -163,34 +170,49 @@
         if (!this.nickname) {
           this.nickname = S(this.address).chompRight('.local');
         }
-
-        this.saveChanges();
       },
 
       changeUsername: function(e) {
         this.username = e.target.value;
-        this.saveChanges();
       },
 
       changeNickname: function(e) {
         this.nickname = e.target.value;
-        this.saveChanges();
       },
 
       // SAVE HANDLERS
-      saveChanges: function() {
-        if (this.id !== -1) {
-          console.log('saving changes to disk...');
+      save: function() {
+        if (!this.address || !this.username) {
+          alert('adress and username are required');
+          return;
+        }
+
+        if (this.id === -1) {
+          console.info('creating new card...');
+          this.showNewComputerDialog();
         } else {
-          console.log('not saving changes disk yet.');
+          console.info('updating card');
         }
       },
 
-      save: function() {
-        if (this.id === -1) {
-          console.info('creating new card...');
+      // DIALOG HANDLERS
+      showNewComputerDialog: function() {
+        // TODO find a better way to open dialogs at body level
+        if (!this.newComputerDialog) {
+          this.newComputerDialog = document.createElement('dialog-new-computer');
+          this.listen(this.newComputerDialog, 'dialog-closed', '_onDialogClosed');
+          Polymer.dom(document.body).appendChild(this.newComputerDialog);
+        }
+        this.newComputerDialog.open();
+      },
 
-          this.saveChanges();
+      _onDialogClosed: function(e, reason) {
+        const setup = require ('./lib/setup');
+
+        if (reason.confirmed) {
+          setup.initialSetup(this.address, this.username).then(() => {
+            console.info('initial setup completed on remote machine');
+          });
         }
       }
     });

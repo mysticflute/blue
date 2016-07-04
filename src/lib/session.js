@@ -3,27 +3,35 @@
 
 const Q = require('q');
 const ssh2 = require('ssh2');
-// const os = require('os');
-// const fs = require('fs');
-// const path = require('path');
+const isDevMode = require('electron-is-dev');
 
 module.exports = class Session {
   constructor() {
+    this.loggingEnabled = true;
     this.connection = null;
     this.replay = [];
   }
 
   _log(title, ...values) {
-    console.groupCollapsed(title);
-    values.forEach(val => console.log(val.toString()));
-    console.groupEnd();
+    if (this.loggingEnabled) {
+      console.groupCollapsed(title);
+      values.forEach(val => console.log(val.toString()));
+      console.groupEnd();
+    }
+  }
+
+  /**
+   * turns off logging to console for this session.
+   */
+  disableLogging() {
+    this.loggingEnabled = false;
   }
 
   /**
    * establishes a new connection.
    *
    * call #end after executing all of your commands.
-   * if password is not provided, private key auth is used.
+   * if a password is not provided, private key auth is used.
    *
    * @param  {string} host - the host address
    * @param  {string} username - the username
@@ -79,10 +87,35 @@ module.exports = class Session {
   }
 
   /**
+   * changes directories, preseving it into subsequent commands (where applicable).
+   *
+   * @param  {string} dir - the path
+   * @returns {Promise<void>} A promise
+   */
+  cd(dir) {
+    let deferred = Q.defer();
+    let command = `cd ${dir}`;
+
+    this.exec(command)
+    .then(response => {
+      if (response.includes('No such file or directory')) {
+        deferred.reject(response);
+      } else {
+        this.replay.push(command);
+        deferred.resolve();
+      }
+    }, error => {
+      deferred.reject(error);
+    });
+
+    return deferred.promise;
+  }
+
+  /**
    * executes one or more commands, joined with &&.
    *
    * @param  {string} ...commands - commands to execute
-   * @returns {Promise<string>} - a promise containing the server reponse
+   * @returns {Promise<string>} - a promise containing the server response
    */
   exec(...commands) {
     if (!this.connection) {
@@ -114,7 +147,11 @@ module.exports = class Session {
       });
 
       stream.on('close', () => {
-        console.info('exec successfully completed');
+        if (isDevMode) {
+          this._log('exec successfully completed', modified);
+        } else {
+          console.log('exec successfully completed');
+        }
         deferred.resolve(out);
       });
     });
@@ -123,25 +160,32 @@ module.exports = class Session {
   }
 
   /**
-   * changes directories, preseving it into subsequent commands.
+   * copies a file from the local machine to the remote machine.
    *
-   * @param  {string} dir - the path
-   * @returns {Promise<void>} A promise
+   * @param  {String} absLocalPath - the absolute path of the local file
+   * @param  {type} absRemotePath - the absolute path of the destination
+   * @returns {Promise<void>} - A promise
    */
-  cd(dir) {
-    let deferred = Q.defer();
-    let command = `cd ${dir}`;
+  put(absLocalPath, absRemotePath) {
+    if (!this.connection) {
+      return Q.reject('not connected!');
+    }
 
-    this.exec(command)
-    .then(response => {
-      if (response.includes('No such file or directory')) {
-        deferred.reject(response);
-      } else {
-        this.replay.push(command);
-        deferred.resolve();
+    let deferred = Q.defer();
+
+    this.connection.sftp((err, sftp) => {
+      if (err) {
+        this._log('error getting sftp connection', err);
+        deferred.reject('could not sftp');
       }
-    }, error => {
-      deferred.reject(error);
+
+      sftp.fastPut(absLocalPath, absRemotePath, (err) => {
+        if (err) {
+          this._log('could not send file', err);
+          return deferred.reject(err);
+        }
+        return deferred.resolve();
+      });
     });
 
     return deferred.promise;
