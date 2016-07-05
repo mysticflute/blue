@@ -1,12 +1,47 @@
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
 
-<dom-module id="card-list">
+<link rel='import' href='./card-edit.html'>
+<link rel='import' href='./card-view.html'>
+<link rel='import' href='../x-add/x-add.html'>
+
+<dom-module id='card-list'>
   <template>
     <style>
-      :host {}
+      :host {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        padding: 30px;
+        justify-content: center;
+      }
+
+      card-view, card-edit {
+        margin: 0 15px;
+      }
+
+      x-add {
+        position: fixed;
+        bottom: 12px;
+        right: 12px;
+        width: 42px;
+        height: 42px;
+      }
+
     </style>
 
-    card list
+    <template is='dom-repeat' items='{{cards}}' sort='_sort'>
+      <card-view
+        class$='[[_cardAnimation(cards)]]'
+        cardId='[[item._id]]'
+        type=[[item.type]]
+        address='[[item.address]]'
+        username='[[item.username]]'
+        nickname='[[item.nickname]]'>
+      </card-view>
+    </template>
+
+    <x-add on-tap='newCard' class='animated fadeIn'></x-add>
+
   </template>
 
   <script>
@@ -15,8 +50,35 @@
 
       properties: {
         cards: {
-          type: Array
+          type: Array,
+          value: []
         }
+      },
+
+      newCard: function() {
+        this.tmpCard = document.createElement('card-edit');
+        this.listen(this.tmpCard, 'card-saved', '_onCardSaved');
+        Polymer.dom(this.root).appendChild(this.tmpCard);
+      },
+
+      _onCardSaved: function(e, card) {
+        const Q = require('Q');
+        Q.fcall(() => {
+          this.tmpCard.classList.add('animated', 'zoomOut');
+        })
+        .delay(1000)
+        .done(() => {
+          Polymer.dom(this.root).removeChild(this.tmpCard);
+          this.push('cards', card);
+        });
+      },
+
+      _sort: function(card1, card2) {
+        return card1.createdAt - card2.createdAt;
+      },
+
+      _cardAnimation: function(cards) {
+        return cards.length > 2 ? 'animated slideInLeft' : 'animated zoomIn';
       }
     });
   </script>

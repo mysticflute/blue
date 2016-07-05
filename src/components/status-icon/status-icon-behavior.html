@@ -1,4 +1,6 @@
 <script>
+  const ms = require('milliseconds');
+
   window.Blue = window.Blue || {};
 
   window.Blue.StatusIconBehavior = {
@@ -13,8 +15,29 @@
       },
       autoCheckInterval: {
         type: Number,
-        value: 3000
+        value: ms.seconds(7)
       }
+    },
+
+    ready: function() {
+      if (this.autoCheckStatus) {
+        this.checkStatus();
+        this._interval = setInterval(() => {
+          console.debug('checking status', this.currentValue, new Date());
+          this.checkStatus();
+        }, this.autoCheckInterval);
+      }
+    },
+
+    detached: function() {
+      if (this._interval) {
+        clearInterval(this._interval);
+      }
+    },
+
+    checkStatus: function() {
+      // override this
+      console.warn('check not implemented!');
     }
   };
 </script>

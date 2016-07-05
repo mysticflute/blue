@@ -19,14 +19,11 @@
         color: var(--google-green-500);
       }
 
-      paper-spinner + iron-icon {
-        margin-left: 6px;
-      }
-
       paper-spinner {
         --paper-spinner-stroke-width: 1px;
         width: 18px;
         height: 18px;
+        margin-right: 6px;
       }
 
       paper-tooltip ::content span {
@@ -39,7 +36,7 @@
       }
     </style>
 
-    <paper-spinner id='spinner' alt='checking...'></paper-spinner>
+    <paper-spinner id='spinner' alt='checking...' hidden$='[[!showStatusCheck]]'></paper-spinner>
 
     <iron-icon icon='[[icon]]' id='icon'></iron-icon>
 
@@ -56,6 +53,10 @@
         icon: {
           type: 'String',
           value: 'android'
+        },
+        showStatusCheck: {
+          type: Boolean,
+          value: false
         }
       },
 

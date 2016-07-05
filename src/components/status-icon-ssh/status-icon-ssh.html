@@ -36,7 +36,7 @@
     </style>
 
     <!--  icon to show SSH connection status -->
-    <status-icon icon='communication:vpn-key' id='icon'>
+    <status-icon icon='communication:vpn-key' id='icon' show-status-check='[[showStatusCheck]]'>
       <span>SSH Status: {{status}}</span>
     </status-icon>
 
@@ -76,7 +76,7 @@
         },
         manageKey: {
           type: Boolean,
-          value: true
+          value: false
         }
       },
 
@@ -93,7 +93,7 @@
       },
 
       detached: function() {
-        if (this.copyKeyDialog != null && this.copyKeyDialog.parentNode) {
+        if (this.copyKeyDialog && this.copyKeyDialog.parentNode) {
           Polymer.dom(document.body).removeChild(this.copyKeyDialog);
         }
       },

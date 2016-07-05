@@ -14,10 +14,9 @@
 
 <dom-module id='status-icon-ping'>
   <template>
-    <style include='status-icon-styles'>
-    </style>
+    <style include='status-icon-styles'></style>
 
-    <status-icon icon='notification:wifi' id='icon'>
+    <status-icon id='icon' icon='notification:wifi' show-status-check='[[showStatusCheck]]'>
       <span>Status: {{status}}</span>
       <span>IP Address: {{ipAddress}}</span>
     </status-icon>

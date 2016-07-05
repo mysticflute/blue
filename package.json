@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "electron-is-dev": "^0.1.1",
+    "milliseconds": "^1.0.3",
     "nedb": "^1.8.0",
     "ping": "git+https://github.com/danielzzz/node-ping.git",
     "q": "^1.4.1",

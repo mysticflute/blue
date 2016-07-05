@@ -10,39 +10,15 @@
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
 <link rel='import' href='../dialogs/dialog-new-computer.html'>
 <link rel='import' href='./card-behavior.html'>
+<link rel='import' href='./card-styles.html'>
 
 <dom-module id='card-edit'>
   <template>
-    <style>
+    <style include='card-styles'>
       :host {
-        width: 300px;
         --paper-input-container-underline: {
           background: #aaa;
         }
-      }
-
-      paper-card {
-        width: 100%;
-      }
-
-      header {
-        padding: 25px 45px 0;
-        height: 220px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      img {
-        max-width: 100%;
-      }
-
-      img.macbook {
-        max-width: 80%;
-      }
-
-      img.imac {
-        max-width: 90%;
       }
 
       paper-dropdown-menu {
@@ -86,7 +62,7 @@
 
         <!-- USERNAME -->
         <paper-input label='username' value='{{username}}' on-change='changeUsername' required auto-validate>
-          <status-icon-ssh address='{{address}}' show-status-check suffix></status-icon-ssh>
+          <status-icon-ssh address='{{address}}' manage-key show-status-check suffix></status-icon-ssh>
         </paper-input>
 
         <!-- NICKNAME -->
@@ -106,13 +82,6 @@
       behaviors: [
         Blue.CardBehavior
       ],
-
-      // LIFECYCLE CALLBACKS
-      detached: function() {
-        if (this.newComputerDialog != null && this.newComputerDialog.parentNode) {
-          Polymer.dom(document.body).removeChild(this.newComputerDialog);
-        }
-      },
 
       // INPUT HANDLERS
       changeType: function(e, detail) {
@@ -183,6 +152,8 @@
       _onDialogClosed: function(e, reason) {
         const setup = require ('./lib/setup');
 
+        Polymer.dom(document.body).removeChild(this.newComputerDialog);
+        
         if (reason.confirmed) {
           setup.initialSetup(this.address, this.username)
           .then(() => {

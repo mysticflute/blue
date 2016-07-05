@@ -1,19 +1,158 @@
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/iron-icons/hardware-icons.html'>
+<link rel='import' href='../../../bower_components/iron-icons/device-icons.html'>
 
-<dom-module id="card-view">
+<link rel='import' href='../status-icon-ping/status-icon-ping.html'>
+<link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
+<link rel='import' href='./card-behavior.html'>
+<link rel='import' href='./card-styles.html'>
+
+<dom-module id='card-view'>
   <template>
-    <style>
-      :host {}
+    <style include='card-styles'>
+      header {
+          flex-direction: column;
+      }
+
+      .nickname {
+        margin-top: 8px;
+        font-size: 25px;
+        font-family: system, -apple-system,  "Helvetica Neue", sans-serif;
+      }
+
+      .status {
+        display: flex;
+        justify-content: center;
+      }
+
+      .status > * {
+        margin: 0 5px;
+        opacity: .8;
+      }
+
+      .status > *:hover {
+        opacity: 1;
+      }
+
+      .card-content {
+        padding-top: 4px;
+      }
+
+      .card-actions {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .card-actions paper-button:hover {
+        font-weight: bold;
+      }
+
+      .card-actions paper-button iron-icon {
+        width: 18px;
+        height: 18px;
+        color: #777;
+        margin-right: 6px;
+      }
     </style>
 
-    Card
+    <paper-card>
+      <header>
+        <img src='{{image}}' class$='{{type}}'/>
+        <div class='nickname'>[[nickname]]</div>
+      </header>
+
+      <div class='card-content'>
+        <div class='status'>
+          <status-icon-ping
+            current-value='[[address]]'
+            auto-check-status>
+          </status-icon-ping>
+
+          <!-- 2 minutes -->
+          <status-icon-ssh
+            address='[[address]]'
+            current-value='[[username]]'
+            auto-check-interval='120000'
+            auto-check-status>
+          </status-icon-ssh>
+        </div>
+      </div>
+
+      <div class='card-actions'>
+        <paper-button on-tap='switchToComputer'>
+          <iron-icon icon='hardware:keyboard'></iron-icon>
+          Switch to this computer
+        </paper-button>
+
+        <paper-button on-tap='enableBluetooth'>
+          <iron-icon icon='device:bluetooth-searching'></iron-icon>
+          Turn bluetooth on
+        </paper-button>
+
+        <paper-button on-tap='disableBluetooth'>
+          <iron-icon icon='device:bluetooth-disabled'></iron-icon>
+          Turn bluetooth off
+        </paper-button>
+
+        <paper-button on-tap='targetDisplayMode' hidden$='{{!_showTargetDisplayAction(type)}}'>
+          <iron-icon icon='hardware:desktop-windows'></iron-icon>
+          Target Display Mode
+        </paper-button>
+
+        <paper-button on-tap='shutdown'>
+          <iron-icon icon='power-settings-new'></iron-icon>
+          Shutdown
+        </paper-button>
+      </div>
+    </paper-card>
+
+    <paper-dialog id='notAvailable'>
+      <h2>Not Available</h2>
+      <p>Sorry Señor, this is not implemented yet.</p>
+      <div class='buttons'>
+        <paper-button dialog-dismiss autofocus>OK</paper-button>
+      </div>
+    </paper-dialog>
   </template>
 
   <script>
     Polymer({
-      is: 'card-view'
+      is: 'card-view',
 
+      behaviors: [
+        Blue.CardBehavior
+      ],
 
+      _showTargetDisplayAction(type) {
+        return type == 'imac';
+      },
+
+      // ACTIONS
+      switchToComputer: function() {
+        this.$.notAvailable.open();
+      },
+
+      enableBluetooth: function() {
+        this.$.notAvailable.open();
+      },
+
+      disableBluetooth: function() {
+        this.$.notAvailable.open();
+      },
+
+      showTargetDisplayAction: function() {
+        this.$.notAvailable.open();
+      },
+
+      shutdown: function() {
+        this.$.notAvailable.open();
+      }
     });
   </script>
 </dom-module>
