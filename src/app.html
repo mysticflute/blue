@@ -7,12 +7,18 @@
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
 
-    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+      const Menu = require('electron').remote.Menu;
+      const staticMenu = require('./menu/static');
+      const dynamicMenu = require('./menu/dynamic');
+      Menu.setApplicationMenu(Menu.buildFromTemplate(staticMenu.concat(dynamicMenu)));
+    </script>
 
-    <link rel="import" href="./components/x-overview/x-overview.html">
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="./components/main-window/main-window.html">
   </head>
 
   <body>
-    <x-overview></x-overview>
+    <main-window></main-window>
   </body>
 </html>

@@ -3,7 +3,7 @@
 <link rel='import' href='../x-add/x-add.html'>
 <link rel='import' href='../edit-card/edit-card.html'>
 
-<dom-module id="x-overview-empty">
+<dom-module id="x-welcome">
   <template>
     <style>
       :host {
@@ -50,13 +50,20 @@
     </div>
 
     <div id='layer2' class='layer2' hidden>
-      <edit-card id='card'></edit-card>
+      <edit-card id='card' on-card-saved='_onCardSaved'></edit-card>
     </div>
   </template>
 
   <script>
     Polymer({
-      is: 'x-overview-empty',
+      is: 'x-welcome',
+
+      properties: {
+        cards: {
+          type: Array,
+          value: []
+        }
+      },
 
       attached: function() {
         const Q = require('Q');
@@ -73,6 +80,18 @@
         Q.delay(920).then(() => {
           this.$.layer2.hidden = false;
           this.$.card.classList.add('animated', 'flipInY');
+        });
+      },
+
+      _onCardSaved: function(e, card) {
+        const Q = require('Q');
+        Q.fcall(() => {
+          this.$.card.classList.remove('flipInY');
+          this.$.card.classList.add('bounceOut');
+        })
+        .delay(1200)
+        .then(() => {
+          this.push('cards', card);
         });
       }
     });

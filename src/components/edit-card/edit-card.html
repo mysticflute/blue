@@ -104,10 +104,9 @@
 
       // PROPERTIES
       properties: {
-        id: {
+        cardId: {
           type: Number,
-          readOnly: true,
-          value: -1
+          value: null
         },
         type: {
           type: 'String',
@@ -168,7 +167,7 @@
 
         // prefill nickname to match the address
         if (!this.nickname) {
-          this.nickname = S(this.address).chompRight('.local');
+          this.nickname = S(this.address).chompRight('.local').toString();
         }
       },
 
@@ -187,10 +186,27 @@
           return;
         }
 
-        if (this.id === -1) {
-          console.info('creating new card...');
+        const db = require('./lib/db');
+
+        if (this.cardId == null) {
+          // a brand spanking new card
           this.showNewComputerDialog();
+        } else if (this.cardId == -1) {
+          // a brand new card, setup completed and ready for saving
+          console.log('creating new card...');
+
+          db.newCard({
+            username: this.username,
+            address: this.address,
+            nickname: this.nickname,
+            type: this.type
+          })
+          .then(newCard => {
+            this.cardId = newCard._id;
+            this.fire('card-saved', newCard);
+          });
         } else {
+          // update an existing card
           console.info('updating card');
         }
       },
@@ -210,9 +226,13 @@
         const setup = require ('./lib/setup');
 
         if (reason.confirmed) {
-          setup.initialSetup(this.address, this.username).then(() => {
+          setup.initialSetup(this.address, this.username)
+          .then(() => {
             console.info('initial setup completed on remote machine');
-          });
+            this.cardId = -1;
+            this.save();
+          })
+          .done();
         }
       }
     });

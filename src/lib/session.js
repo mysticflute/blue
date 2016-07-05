@@ -3,28 +3,20 @@
 
 const Q = require('q');
 const ssh2 = require('ssh2');
-const isDevMode = require('electron-is-dev');
+const Logger = require('./Logger');
 
 module.exports = class Session {
   constructor() {
-    this.loggingEnabled = true;
+    this.logger = new Logger();
     this.connection = null;
     this.replay = [];
-  }
-
-  _log(title, ...values) {
-    if (this.loggingEnabled) {
-      console.groupCollapsed(title);
-      values.forEach(val => console.log(val.toString()));
-      console.groupEnd();
-    }
   }
 
   /**
    * turns off logging to console for this session.
    */
   disableLogging() {
-    this.loggingEnabled = false;
+    this.logger.disableLogging();
   }
 
   /**
@@ -67,7 +59,7 @@ module.exports = class Session {
     }
 
     this.connection.on('error', err => {
-      this._log('error received in _connection', err);
+      this.logger.log('error received in _connection', err);
       if (err.message.includes('All configured authentication methods failed')) {
         deferred.reject(new Error('Could not authenticate'));
       } else if (err.message.includes('getaddrinfo ENOTFOUND')) {
@@ -132,26 +124,22 @@ module.exports = class Session {
       let out = '';
 
       if (err) {
-        this._log('error received during exec', err);
+        this.logger.log('error received during exec', err);
         deferred.reject(err);
       }
 
       stream.stderr.on('data', data => {
-        this._log('data received from stderr during exec', data);
+        this.logger.log('data received from stderr during exec', data.toString());
         out += data;
       });
 
       stream.on('data', data => {
-        this._log('data received during exec', data);
+        this.logger.log('data received during exec', data.toString());
         out += data;
       });
 
       stream.on('close', () => {
-        if (isDevMode) {
-          this._log('exec successfully completed', modified);
-        } else {
-          console.log('exec successfully completed');
-        }
+        this.logger.debug('exec successfully completed', modified);
         deferred.resolve(out);
       });
     });
@@ -175,13 +163,13 @@ module.exports = class Session {
 
     this.connection.sftp((err, sftp) => {
       if (err) {
-        this._log('error getting sftp connection', err);
+        this.logger.warn('error getting sftp connection', err);
         deferred.reject('could not sftp');
       }
 
       sftp.fastPut(absLocalPath, absRemotePath, (err) => {
         if (err) {
-          this._log('could not send file', err);
+          this.logger.warn('could not send file', err);
           return deferred.reject(err);
         }
         return deferred.resolve();

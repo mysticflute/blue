@@ -1,11 +1,9 @@
 // menu.js
-// main application menu, used by electron's main process in main.js
+// main application menu, added immediately in main.js.
 
-const electron = require('electron');
-const {app, Menu} = electron;
 const name = 'Blue';
 
-const template = [
+module.exports = [
   {
     label: name,
     submenu: [
@@ -44,7 +42,11 @@ const template = [
       {
         label: 'Quit',
         accelerator: 'Command+Q',
-        click() { app.quit(); }
+        click() {
+          const electron = require('electron');
+          const app = electron.app || electron.remote.app;
+          app.quit();
+        }
       }
     ]
   },
@@ -117,5 +119,3 @@ const template = [
     ]
   }
 ];
-
-module.exports = Menu.buildFromTemplate(template);

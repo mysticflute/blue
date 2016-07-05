@@ -7,7 +7,7 @@ let win;
 
 function createWindow() {
   // set the main application menu
-  Menu.setApplicationMenu(require('./lib/menu'));
+  Menu.setApplicationMenu(Menu.buildFromTemplate(require('./menu/static')));
 
   // create the browser window
   win = new BrowserWindow({width: 900, height: 700});

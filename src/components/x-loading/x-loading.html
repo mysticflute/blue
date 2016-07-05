@@ -1,0 +1,47 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="x-loading">
+  <template>
+    <style>
+      :host {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+      }
+
+      paper-spinner {
+        width: 35px;
+        height: 35px;
+      }
+    </style>
+
+    <paper-spinner id='spinner' active></paper-spinner>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'x-loading',
+
+      properties: {
+        active: {
+          type: Boolean,
+          observer: '_activeChanged'
+        }
+      },
+
+      _activeChanged: function(newValue) {
+        this.$.spinner.active = newValue;
+        this.hidden = !newValue;
+      },
+
+      delayedHide: function() {
+        const Q = require('Q');
+        Q.delay(1200).then(() => { this.active = false; });
+      }
+    });
+  </script>
+</dom-module>
