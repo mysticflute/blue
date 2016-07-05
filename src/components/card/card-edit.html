@@ -9,8 +9,9 @@
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
 <link rel='import' href='../dialogs/dialog-new-computer.html'>
+<link rel='import' href='./card-behavior.html'>
 
-<dom-module id='edit-card'>
+<dom-module id='card-edit'>
   <template>
     <style>
       :host {
@@ -100,60 +101,17 @@
 
   <script>
     Polymer({
-      is: 'edit-card',
+      is: 'card-edit',
 
-      // PROPERTIES
-      properties: {
-        cardId: {
-          type: Number,
-          value: null
-        },
-        type: {
-          type: 'String',
-          value: 'macbook'
-        },
-        address: {
-          type: 'String',
-          notify: true
-        },
-        username: {
-          type: 'String',
-          notify: true
-        },
-        nickname: {
-          type: 'String',
-          notify: true
-        },
-        image: {
-          type: 'String',
-          readOnly: true,
-          computed: 'selectedTypeImage(typeInfo, type)'
-        },
-        typeInfo: {
-          type: Object,
-          value: {
-            'macbook': {index: 0, path: 'apple/macbook-original.png'},
-            'imac': {index: 1, path: 'apple/imac-original.png'},
-            'macpro': {index: 2, path: 'apple/macpro-small.png'},
-            'macmini': {index: 3, path: 'apple/macmini-medium.png'}
-          }
-        }
-      },
+      behaviors: [
+        Blue.CardBehavior
+      ],
 
       // LIFECYCLE CALLBACKS
       detached: function() {
         if (this.newComputerDialog != null && this.newComputerDialog.parentNode) {
           Polymer.dom(document.body).removeChild(this.newComputerDialog);
         }
-      },
-
-      // COMPUTED BINDINGS
-      selectedTypeIndex: function(typeInfo, type) {
-        return typeInfo[type].index;
-      },
-
-      selectedTypeImage: function(typeInfo, type) {
-        return this.resolveUrl(typeInfo[type].path);
       },
 
       // INPUT HANDLERS
