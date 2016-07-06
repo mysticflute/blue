@@ -1,0 +1,49 @@
+<!--
+  Dialogs: confirmation
+
+  A confirmation window.
+ -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+
+<dom-module id="dialog-confirmation">
+  <template>
+    <paper-dialog id='dialog' on-iron-overlay-closed='_onClose'>
+      <h2>[[title]]</h2>
+      <p>
+        [[message]]
+      </p>
+      <div class='buttons'>
+        <paper-button dialog-dismiss autofocus>No</paper-button>
+        <paper-button dialog-confirm>Yes</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dialog-confirmation',
+
+      properties: {
+        title: {
+          type: 'String',
+          value: 'Confirm Action'
+        },
+        message: {
+          type: 'String',
+          value: 'Do you really want to take this action?'
+        }
+      },
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      _onClose: function() {
+        this.fire('dialog-closed', this.$.dialog.closingReason);
+      }
+    });
+  </script>
+</dom-module>

@@ -21,6 +21,8 @@ module.exports.status = function(address, username) {
     } else {
       return Q.reject(new Error('Unknown bluetooth status: '  + response));
     }
+  }).fail(() => {
+    return false;
   });
 };
 

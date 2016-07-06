@@ -7,6 +7,7 @@
 <link rel='import' href='../../../bower_components/iron-icons/hardware-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icons/device-icons.html'>
 
+<link rel='import' href='../dialogs/dialog-confirmation.html'>
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
 <link rel='import' href='../status-icon-bluetooth/status-icon-bluetooth.html'>
@@ -199,7 +200,25 @@
       },
 
       shutdown: function() {
+        this.confirm = document.createElement('dialog-confirmation');
+        this.confirm.message = `Are you sure you want to shutdown '${this.nickname}'?`;
+        this.listen(this.confirm, 'dialog-closed', '_doShutdown');
+        Polymer.dom(document.body).appendChild(this.confirm);
+        this.confirm.open();
+      },
 
+      _doShutdown: function(e, reason) {
+        const misc = require('./lib/misc');
+
+        Polymer.dom(document.body).removeChild(this.confirm);
+
+        if (reason.confirmed) {
+          this._showProgress();
+          misc.shutdown(this.address, this.username)
+          .then(() => {
+            this._hideProgress();
+          });
+        }
       }
     });
   </script>
