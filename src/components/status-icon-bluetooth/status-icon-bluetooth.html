@@ -1,0 +1,70 @@
+<!--
+  Status Icons: bluetooth connection
+
+  This component shows an icon indicating whether the remote computer's
+  bluetooth connection is on or off.
+-->
+
+<link rel='import' href='../../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../../bower_components/iron-icons/device-icons.html'>
+
+<link rel='import' href='../status-icon/status-icon-behavior.html'>
+<link rel='import' href='../status-icon/status-icon-styles.html'>
+<link rel='import' href='../status-icon/status-icon.html'>
+
+<dom-module id='status-icon-bluetooth'>
+  <template>
+    <style include='status-icon-styles'></style>
+
+    <status-icon id='icon' icon='device:bluetooth' show-status-check='[[showStatusCheck]]'>
+      <span>Status: {{status}}</span>
+    </status-icon>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'status-icon-bluetooth',
+
+      properties: {
+        address: {
+          type: 'String'
+        },
+        username: {
+          type: 'String'
+        },
+        status: {
+          type: 'String',
+          notify: true,
+          readOnly: true,
+          value: 'unknown' // unchecked, off, on
+        }
+      },
+
+      behaviors: [
+        Blue.StatusIconBehavior
+      ],
+
+      description: function() {
+        return `bluetooth (${this.username}@${this.address})`;
+      },
+
+      checkStatus: function() {
+        const bluetooth = require('./lib/bluetooth');
+
+        if (this.showStatusCheck) {
+          this.$.icon.showSpinner();
+        }
+
+        bluetooth.status(this.address, this.username)
+        .then(response => {
+          this._setStatus(response ? 'on' : 'off');
+          this.$.icon.setIconStatus('highlight', response);
+
+          if (this.showStatusCheck) {
+            this.$.icon.hideSpinner();
+          }
+        });
+      }
+    });
+  </script>
+</dom-module>

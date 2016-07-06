@@ -108,6 +108,10 @@
         this.$.icon.setIconStatus('highlight', false);
       },
 
+      description: function() {
+        return `ssh (${this.currentValue}@${this.address})`;
+      },
+
       checkStatus: function() {
         const ssh = require('./lib/ssh');
 

@@ -15,7 +15,7 @@
       },
       autoCheckInterval: {
         type: Number,
-        value: ms.seconds(7)
+        value: ms.seconds(14)
       }
     },
 
@@ -23,7 +23,7 @@
       if (this.autoCheckStatus) {
         this.checkStatus();
         this._interval = setInterval(() => {
-          console.debug('checking status', this.currentValue, new Date());
+          // console.debug('checking status', this.description(), new Date());
           this.checkStatus();
         }, this.autoCheckInterval);
       }
@@ -38,6 +38,10 @@
     checkStatus: function() {
       // override this
       console.warn('check not implemented!');
+    },
+
+    description: function() {
+      return 'n/a';
     }
   };
 </script>

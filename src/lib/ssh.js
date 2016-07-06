@@ -26,7 +26,9 @@ exports.checkConnection = function(host, username) {
   .then(() => {
     session.end();
     return true;
-  }).fail(() => {
+  })
+  .fail(() => {
+    session.end();
     return false;
   });
 };

@@ -45,6 +45,10 @@
         Blue.StatusIconInputBehavior
       ],
 
+      description: function() {
+        return `ping (${this.currentValue})`;
+      },
+
       onInvalidInput: function() {
         this.$.icon.setIconStatus('highlight', false);
       },

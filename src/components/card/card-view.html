@@ -1,6 +1,6 @@
 <link rel='import' href='../../../bower_components/polymer/polymer.html'>
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
-<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-progress/paper-progress.html'>
 <link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
 <link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
@@ -9,14 +9,28 @@
 
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
+<link rel='import' href='../status-icon-bluetooth/status-icon-bluetooth.html'>
 <link rel='import' href='./card-behavior.html'>
 <link rel='import' href='./card-styles.html'>
 
 <dom-module id='card-view'>
   <template>
     <style include='card-styles'>
+      paper-progress {
+        width: 100%;
+        display: none;
+        position: absolute;
+        --paper-progress-container-color: #fff;
+        --paper-progress-active-color: var(--google-green-300);
+        /*opacity: .6;*/
+      }
+
       header {
-          flex-direction: column;
+        flex-direction: column;
+      }
+
+      img.imac {
+        max-width: 85%;
       }
 
       .nickname {
@@ -31,7 +45,7 @@
       }
 
       .status > * {
-        margin: 0 5px;
+        margin: 0 3px;
         opacity: .8;
       }
 
@@ -62,6 +76,7 @@
     </style>
 
     <paper-card>
+      <paper-progress id='progress' class='animated' indeterminate></paper-progress>
       <header>
         <img src='{{image}}' class$='{{type}}'/>
         <div class='nickname'>[[nickname]]</div>
@@ -74,6 +89,12 @@
             auto-check-status>
           </status-icon-ping>
 
+          <status-icon-bluetooth
+            address='[[address]]'
+            username='[[username]]'
+            auto-check-status>
+          </status-icon-bluetooth>
+
           <!-- 2 minutes -->
           <status-icon-ssh
             address='[[address]]'
@@ -81,6 +102,7 @@
             auto-check-interval='120000'
             auto-check-status>
           </status-icon-ssh>
+
         </div>
       </div>
 
@@ -111,14 +133,6 @@
         </paper-button>
       </div>
     </paper-card>
-
-    <paper-dialog id='notAvailable'>
-      <h2>Not Available</h2>
-      <p>Sorry Señor, this is not implemented yet.</p>
-      <div class='buttons'>
-        <paper-button dialog-dismiss autofocus>OK</paper-button>
-      </div>
-    </paper-dialog>
   </template>
 
   <script>
@@ -133,25 +147,53 @@
         return type == 'imac';
       },
 
+      _showProgress: function() {
+        this.$.progress.style.display = 'block';
+        this.$.progress.classList.add('fadeIn');
+      },
+
+      _hideProgress: function() {
+        const Q = require ('Q');
+
+        this.$.progress.classList.remove('fadeIn');
+        this.$.progress.classList.add('fadeOut');
+        Q.delay(1000).then(() => {
+          this.$.progress.style.display = 'none';
+        });
+      },
+
       // ACTIONS
       switchToComputer: function() {
-        this.$.notAvailable.open();
+        this._showProgress();
+
       },
 
       enableBluetooth: function() {
-        this.$.notAvailable.open();
+        const bluetooth = require('./lib/bluetooth');
+
+        this._showProgress();
+        bluetooth.turnOn(this.address, this.username)
+        .then(() => {
+          this._hideProgress();
+        });
       },
 
       disableBluetooth: function() {
-        this.$.notAvailable.open();
+        const bluetooth = require('./lib/bluetooth');
+
+        this._showProgress();
+        bluetooth.turnOff(this.address, this.username)
+        .then(() => {
+          this._hideProgress();
+        });
       },
 
       showTargetDisplayAction: function() {
-        this.$.notAvailable.open();
+
       },
 
       shutdown: function() {
-        this.$.notAvailable.open();
+
       }
     });
   </script>
