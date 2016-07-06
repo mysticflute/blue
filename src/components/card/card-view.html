@@ -188,8 +188,14 @@
         });
       },
 
-      showTargetDisplayAction: function() {
+      targetDisplayMode: function() {
+        const misc = require('./lib/misc');
 
+        this._showProgress();
+        misc.toggleTargetDisplayMode(this.address, this.username)
+        .then(() => {
+          this._hideProgress();
+        });
       },
 
       shutdown: function() {
