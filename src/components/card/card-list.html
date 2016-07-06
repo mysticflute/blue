@@ -13,6 +13,7 @@
         height: 100%;
         padding: 30px;
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       card-view, card-edit {
@@ -78,7 +79,7 @@
       },
 
       _cardAnimation: function(cards) {
-        return cards.length > 2 ? 'animated slideInLeft' : 'animated zoomIn';
+        return cards.length < 2 ? 'animated slideInLeft' : 'animated zoomIn';
       }
     });
   </script>

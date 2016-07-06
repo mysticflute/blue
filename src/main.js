@@ -1,5 +1,6 @@
 // main process
 
+const windowState = require('electron-window-state');
 const electron = require('electron');
 const {app, Menu, BrowserWindow} = electron;
 
@@ -9,8 +10,21 @@ function createWindow() {
   // set the main application menu
   Menu.setApplicationMenu(Menu.buildFromTemplate(require('./menu/static')));
 
+  // restore window state
+  let mainWindowState = windowState({
+    defaultWidth: 900,
+    defaultHeight: 700
+  });
+
   // create the browser window
-  win = new BrowserWindow({width: 900, height: 700});
+  win = new BrowserWindow({
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height
+  });
+
+  mainWindowState.manage(win);
 
   // load the main page of the app
   win.loadURL(`file://${__dirname}/app.html`);
