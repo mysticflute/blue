@@ -8,10 +8,18 @@
     <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
 
     <script>
-      const Menu = require('electron').remote.Menu;
+      const {app, Menu} = require('electron').remote;
+
+      // additions to the app menu
       const staticMenu = require('./menu/static');
       const dynamicMenu = require('./menu/dynamic');
       Menu.setApplicationMenu(Menu.buildFromTemplate(staticMenu.concat(dynamicMenu)));
+
+      // set the doc menu
+      const dockMenu = require('./menu/dock');
+      dockMenu().then(menu => {
+        app.dock.setMenu(Menu.buildFromTemplate(menu));
+      });
     </script>
 
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
