@@ -10,7 +10,14 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune  --app-category-type=public.app-category.productivity --ignore dist"
+    "clean": "rm -rf dist",
+    "zip": "cd dist/Blue/Blue-darwin-x64 && ditto -c -k --sequesterRsrc --keepParent Blue.app Blue.app.zip",
+    "predist": "npm run clean",
+    "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune  --app-category-type=public.app-category.productivity --ignore dist",
+    "postdist": "npm run zip",
+    "postversion": "git push && git push --tags",
+    "draft": "publish-release --apiUrl https://git.soma.salesforce.com/api/v3 --assets dist/Blue/Blue-darwin-x64/Blue.app.zip --owner nmcwilliams --repo $npm_package_name --token $GHE_TOKEN_BLUE --draft --reuseRelease",
+    "release": "publish-release --apiUrl https://git.soma.salesforce.com/api/v3 --assets dist/Blue/Blue-darwin-x64/Blue.app.zip --owner nmcwilliams --repo $npm_package_name --token $GHE_TOKEN_BLUE --reuseRelease"
   },
   "dependencies": {
     "electron-is-dev": "^0.1.1",
