@@ -5,6 +5,7 @@ const Session = require('./session');
 
 module.exports.status = function(address, username) {
   let session = new Session();
+  session.disableLogging();
 
   return session.connect(address, username)
   .then(() => {

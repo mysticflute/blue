@@ -127,8 +127,9 @@
             this.$.icon.hideSpinner();
           }
 
+          this.$.icon.setIconStatus('highlight', verified);
+
           if (verified) {
-            this.$.icon.setIconStatus('highlight', true);
             this.$.icon.classList.remove('hide');
             this.$.copyKeyIcon.classList.add('hide');
             this.$.createKeyIcon.classList.add('hide');
