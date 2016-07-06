@@ -180,6 +180,17 @@ module.exports = class Session {
   }
 
   /**
+   * displays a notification on the remote computer.
+   *
+   * @param  {String} title - the notification title
+   * @param  {String} message - the notification message
+   * @returns {Promise<void>} - a promise
+   */
+  notify(title, message) {
+    return this.exec(`osascript -e 'display notification "${message}" with title "${title}"'`);
+  }
+
+  /**
    * ends the current session.
    */
   end() {

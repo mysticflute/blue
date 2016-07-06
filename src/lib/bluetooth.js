@@ -32,6 +32,9 @@ module.exports.turnOn = function(address, username) {
     return session.exec('~/.blueconfig/blueutil on');
   })
   .then(() => {
+    return session.notify('Bluetooth', 'Bluetooth was turned ON remotely');
+  })
+  .then(() => {
     session.end();
   });
 };
@@ -42,6 +45,9 @@ module.exports.turnOff = function(address, username) {
   return session.connect(address, username)
   .then(() => {
     return session.exec('~/.blueconfig/blueutil off');
+  })
+  .then(() => {
+    return session.notify('Bluetooth', 'Bluetooth was turned OFF remotely');
   })
   .then(() => {
     session.end();
