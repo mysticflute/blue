@@ -10,7 +10,7 @@ This little project is a foray into some new technologies such as [Electron](htt
 
 In my setup I have a personal iMac + a Mac Pro for the job. The Mac Pro is connected to an Apple Cinema Display. I have a single Apple bluetooth keyboard and trackpad.
 
-![My office](/resources/office.png?raw=true "My Setup")
+![My office](/resources/office.jpg?raw=true "My Setup")
 
 My nirvana is that when I'm working on the Mac Pro it's connected to the bluetooth peripherals, Cinema Display, and also using the beauiful screen of the iMac as a second monitor. When work is done, I want to switch to my iMac  for personal stuff like recording music. I want to use the same keyboard and mouse though, and have the iMac use the Cinema Display. When it's time to work again I want to change back to the previous setup in as few steps as possible.
 
