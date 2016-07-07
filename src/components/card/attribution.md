@@ -1,4 +1,5 @@
-Source Info:
+Attribution for Images
+======================
 
 apple/
 - Images for macpro, macmini and all alt*:
@@ -10,7 +11,6 @@ apple/
   Khalil Benihoud
   http://www.sketchappsources.com/free-source/182-apple-imac.html
   No license info given (listed under "Free Resources")
-
 
 - Image for macbook
   Cesar Zeppini
