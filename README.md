@@ -10,7 +10,7 @@ This little project is a foray into some new technologies such as [Electron](htt
 
 In my setup I have a personal iMac + a Mac Pro for the job. The Mac Pro is connected to an Apple Cinema Display. I have a single Apple bluetooth keyboard and trackpad.
 
-![Alt text](/resources/app.png?raw=true "My Setup")
+![My office](/resources/office.png?raw=true "My Setup")
 
 My nirvana is that when I'm working on the Mac Pro it's connected to the bluetooth peripherals, Cinema Display, and also using the beauiful screen of the iMac as a second monitor. When work is done, I want to switch to my iMac  for personal stuff like recording music. I want to use the same keyboard and mouse though, and have the iMac use the Cinema Display. When it's time to work again I want to change back to the previous setup in as few steps as possible.
 
@@ -19,6 +19,8 @@ I want to do all of this without fumbling around with USB devices or extra physi
 Previously I had a script that managed most of this, but sometimes it failed and I ended up not being able to use my bluetooth peripherals on either computer. Sometimes it worked, but the Mac Pro would lose the screen from the iMac and there was no way to get it back except to switch back the keyboard and mouse. A hassle.
 
 So basically Blue solves this very specific problem :)
+
+![Screenshot of the app](/resources/app.png?raw=true "The App")
 
 Caveat, the Cinema Display has one thunderbolt cable. I also have a thunderbolt cable connected to my iMac. When working both cables are connected to the Mac Pro. When it's time to use the iMac I disconnect both cables from the Mac Pro, and connect the cable from the iMac to the Cinema Display. It may sound complicated but it's not, and as the only physical step in the process overall it runs quite smoothly.  
 
