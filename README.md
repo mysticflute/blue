@@ -8,7 +8,7 @@ About
 
 This little project is a foray into some new technologies such as [Electron](http://electron.atom.io/) and [Polymer](https://www.polymer-project.org). Of course it doesn't hurt if it's actually a little useful as well.
 
-In my setup I have a personal iMac + a Mac Pro for the job. The Mac Pro is connected to an Apple Cinema Display. I have a single Apple bluetooth keyboard and trackpad.
+In my setup I have a personal iMac + a Mac Pro for the job. The Mac Pro is connected to an Apple Cinema Display. I have a single Apple bluetooth keyboard and trackpad:
 
 ![My office](/resources/office.jpg?raw=true "My Setup")
 
