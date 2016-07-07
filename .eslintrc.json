@@ -18,7 +18,8 @@
     ],
     "semi": [
       "warn",
-      "always"
+      "always",
+      { "omitLastInOneLineBlock": true}
     ],
     "no-unused-vars": [
       "warn"

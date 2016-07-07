@@ -76,7 +76,7 @@
       }
     </style>
 
-    <paper-card>
+    <paper-card on-contextmenu='_onContextMenu'>
       <paper-progress id='progress' class='animated' indeterminate></paper-progress>
       <header>
         <img src='{{image}}' class$='{{type}}'/>
@@ -155,7 +155,6 @@
 
       _hideProgress: function() {
         const Q = require ('Q');
-
         this.$.progress.classList.remove('fadeIn');
         this.$.progress.classList.add('fadeOut');
         Q.delay(1000).then(() => {
@@ -163,10 +162,25 @@
         });
       },
 
+      _onContextMenu: function(e) {
+        const menu = require('./menu/context');
+        menu.showWithDefaults(e, [
+          {
+            label: 'Change Nickname',
+            click: () => {
+              console.log('change nickname');
+            }
+          },
+          {
+            label: 'Delete',
+            click: () => { this.remove() }
+          }
+        ]);
+      },
+
       // ACTIONS
       switchToComputer: function() {
         this._showProgress();
-
       },
 
       enableBluetooth: function() {
@@ -174,9 +188,8 @@
 
         this._showProgress();
         bluetooth.turnOn(this.address, this.username)
-        .then(() => {
-          this._hideProgress();
-        });
+        .then(() => this._hideProgress())
+        .done();
       },
 
       disableBluetooth: function() {
@@ -184,9 +197,8 @@
 
         this._showProgress();
         bluetooth.turnOff(this.address, this.username)
-        .then(() => {
-          this._hideProgress();
-        });
+        .then(() => this._hideProgress())
+        .done();
       },
 
       targetDisplayMode: function() {
@@ -194,9 +206,8 @@
 
         this._showProgress();
         misc.toggleTargetDisplayMode(this.address, this.username)
-        .then(() => {
-          this._hideProgress();
-        });
+        .then(() => this._hideProgress())
+        .done();
       },
 
       shutdown: function() {
@@ -215,9 +226,31 @@
         if (reason.confirmed) {
           this._showProgress();
           misc.shutdown(this.address, this.username)
+          .then(() => this._hideProgress())
+          .done();
+        }
+      },
+
+      remove: function() {
+        this.confirm = document.createElement('dialog-confirmation');
+        this.confirm.message = `Are you sure you want to delete '${this.nickname}'?`;
+        this.listen(this.confirm, 'dialog-closed', '_doRemove');
+        Polymer.dom(document.body).appendChild(this.confirm);
+        this.confirm.open();
+      },
+
+      _doRemove: function(e, reason) {
+        const db = require('./lib/db');
+
+        Polymer.dom(document.body).removeChild(this.confirm);
+
+        if (reason.confirmed) {
+          db.removeCard(this.cardId)
           .then(() => {
-            this._hideProgress();
-          });
+            console.info('card removed', this.cardId);
+            this.fire('card-removed', {element: this, id: this.cardId});
+          })
+          .done();
         }
       }
     });

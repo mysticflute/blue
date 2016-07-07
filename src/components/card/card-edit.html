@@ -118,7 +118,7 @@
         if (this.cardId == null) {
           // a brand spanking new card
           this.showNewComputerDialog();
-        } else if (this.cardId == -1) {
+        } else if (this.cardId == 'x') {
           // a brand new card, setup completed and ready for saving
           console.log('creating new card...');
 
@@ -153,12 +153,12 @@
         const setup = require ('./lib/setup');
 
         Polymer.dom(document.body).removeChild(this.newComputerDialog);
-        
+
         if (reason.confirmed) {
           setup.initialSetup(this.address, this.username)
           .then(() => {
             console.info('initial setup completed on remote machine');
-            this.cardId = -1;
+            this.cardId = 'x';
             this.save();
           })
           .done();

@@ -51,13 +51,23 @@ exports.updateCard = function(id, updates) {
 };
 
 exports.removeCard = function(id) {
-  logger.log('remove card', id);
+  let deferred = Q.defer();
+
+  cards.remove({ _id: id }, {}, (err, numRemoved) => {
+    if (err) {
+      deferred.reject(err);
+    } else {
+      deferred.resolve(numRemoved);
+    }
+  });
+
+  return deferred.promise;
 };
 
 exports.removeAllCards = function() {
   let deferred = Q.defer();
 
-  cards.remove({}, { multi: true }, function (err, numRemoved) {
+  cards.remove({}, { multi: true }, (err, numRemoved) => {
     if (err) {
       deferred.reject(err);
     } else {

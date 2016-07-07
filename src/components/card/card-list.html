@@ -32,16 +32,16 @@
     <template is='dom-repeat' items='{{cards}}' sort='_sort'>
       <card-view
         class$='[[_cardAnimation(cards)]]'
-        cardId='[[item._id]]'
+        card-id='[[item._id]]'
         type=[[item.type]]
         address='[[item.address]]'
         username='[[item.username]]'
-        nickname='[[item.nickname]]'>
+        nickname='[[item.nickname]]'
+        on-card-removed='_onCardRemoved'>
       </card-view>
     </template>
 
     <x-add on-tap='newCard' class='animated fadeIn'></x-add>
-
   </template>
 
   <script>
@@ -55,6 +55,14 @@
         }
       },
 
+      _sort: function(card1, card2) {
+        return card1.createdAt - card2.createdAt;
+      },
+
+      _cardAnimation: function(cards) {
+        return cards.length < 2 ? 'animated slideInLeft' : 'animated zoomIn';
+      },
+
       newCard: function() {
         this.tmpCard = document.createElement('card-edit');
         this.listen(this.tmpCard, 'card-saved', '_onCardSaved');
@@ -66,19 +74,28 @@
         Q.fcall(() => {
           this.tmpCard.classList.add('animated', 'zoomOut');
         })
-        .delay(1000)
-        .done(() => {
+        .delay(1000).then(() => {
           Polymer.dom(this.root).removeChild(this.tmpCard);
           this.push('cards', card);
         });
       },
 
-      _sort: function(card1, card2) {
-        return card1.createdAt - card2.createdAt;
-      },
+      _onCardRemoved: function(e, data) {
+        let index = -1;
+        for (let i = 0; i < this.cards.length; i++) {
+          if (this.cards[i]._id == data.id) {
+            index = i;
+            break;
+          }
+        }
 
-      _cardAnimation: function(cards) {
-        return cards.length < 2 ? 'animated slideInLeft' : 'animated zoomIn';
+        if (index > -1) {
+          const Q = require('Q');
+          data.element.classList.add('animated', 'zoomOut');
+          Q.delay(1100).then(() => {
+            this.splice('cards', index, 1);
+          });
+        }
       }
     });
   </script>

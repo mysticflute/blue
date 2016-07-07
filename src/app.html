@@ -20,6 +20,12 @@
       dockMenu().then(menu => {
         app.dock.setMenu(Menu.buildFromTemplate(menu));
       });
+
+      // default context menu
+      const contextMenu = require('./menu/context');
+      window.addEventListener('contextmenu', (e) => {
+        contextMenu.showDefaults(e);
+      });
     </script>
 
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>

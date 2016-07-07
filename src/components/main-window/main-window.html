@@ -1,6 +1,5 @@
 <link rel='import' href='../../../bower_components/polymer/polymer.html'>
 
-<link rel='import' href='../x-loading/x-loading.html'>
 <link rel='import' href='../x-welcome/x-welcome.html'>
 <link rel='import' href='../card/card-list.html'>
 
@@ -15,7 +14,6 @@
       }
     </style>
 
-    <x-loading id='loading' hidden></x-loading/>
     <x-welcome id='welcome'cards='{{cards}}' hidden></x-welcome>
     <card-list id='list' cards='{{cards}}' hidden></card-list>
   </template>
@@ -26,11 +24,7 @@
 
       ready: function() {
         const db = require('./lib/db');
-
-        db.getCards()
-        .then(cards => {
-          this.cards = cards;
-        });
+        db.getCards().then(cards => { this.cards = cards });
       },
 
       properties: {
@@ -48,11 +42,9 @@
         if (this.cards.length == 0) {
           this.$.list.hidden = true;
           this.$.welcome.hidden = false;
-          this.$.loading.active = false;
         } else {
           this.$.list.hidden = false;
           this.$.welcome.hidden = true;
-          this.$.loading.delayedHide();
         }
       }
     });
