@@ -76,11 +76,13 @@ Before releasing, commit all changes and push. To push changes to Github, you mu
 Release a draft:
 
     npm version [patch | minor | major]
+    npm run dist
     npm run draft
 
 Release a regular version:
 
     npm version [patch | minor | major]
+    npm run dist
     npm run release
 
 #### Version Guidelines
