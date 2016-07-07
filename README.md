@@ -8,21 +8,21 @@ About
 
 This little project is a foray into some new technologies such as [Electron](http://electron.atom.io/) and [Polymer](https://www.polymer-project.org). Of course it doesn't hurt if it's actually a little useful as well.
 
-In my setup I have a personal iMac + a Mac Pro for the job. The Mac Pro is connected to an Apple Cinema Display. I have a single Apple bluetooth keyboard and trackpad:
+In my setup I have a personal iMac + a Mac Pro for work. The Mac Pro is connected to an Apple Cinema Display. I have a single Apple bluetooth keyboard and trackpad:
 
 ![My office](/resources/office.jpg?raw=true "My Setup")
 
-My nirvana is that when I'm working on the Mac Pro it's connected to the bluetooth peripherals, Cinema Display, and also using the beauiful screen of the iMac as a second monitor. When work is done, I want to switch to my iMac  for personal stuff like recording music. I want to use the same keyboard and mouse though, and have the iMac use the Cinema Display. When it's time to work again I want to change back to the previous setup in as few steps as possible.
+My nirvana is when I'm working on the Mac Pro and it's connected to the bluetooth peripherals, Cinema Display, and also using the beauiful screen of the iMac as a second monitor. When work is done, I switch to my iMac for personal stuff like recording music. I want to use the same keyboard and mouse though, and have the iMac use the Cinema Display. Then when it's time to work again I want to switch back with as few steps as possible.
 
 I want to do all of this without fumbling around with USB devices or extra physical hardware.
 
-Previously I had a script that managed most of this, but sometimes it failed and I ended up not being able to use my bluetooth peripherals on either computer. Sometimes it worked, but the Mac Pro would lose the screen from the iMac and there was no way to get it back except to switch back the keyboard and mouse. A hassle.
+Previously I had a script that managed most of this, but sometimes it failed and I ended up not being able to use my bluetooth peripherals on either computer. Sometimes it worked, but the Mac Pro would lose the screen from the iMac and there was no way to get it back except to switch the keyboard and mouse. A hassle.
 
-So basically Blue solves this very specific problem :)
+So basically Blue solves this very specific problem in overly complicated yet underwhelming fashion :)
 
 ![Screenshot of the app](/resources/app.png?raw=true "The App")
 
-Caveat, the Cinema Display has one thunderbolt cable. I also have a thunderbolt cable connected to my iMac. When working both cables are connected to the Mac Pro. When it's time to use the iMac I disconnect both cables from the Mac Pro, and connect the cable from the iMac to the Cinema Display. It may sound complicated but it's not, and as the only physical step in the process overall it runs quite smoothly.  
+Caveat, the Cinema Display has one thunderbolt cable. I also have a thunderbolt cable connected to my iMac. When working, both cables are connected to the Mac Pro. When it's time to use the iMac I disconnect both cables from the Mac Pro, and connect the cable from the iMac to the Cinema Display. It may sound complicated but it's not, and as the only physical step in the process overall it runs quite smoothly.  
 
 Features
 --------
@@ -40,7 +40,7 @@ Features
 Updating
 --------
 
-Just download a new version from [Releases](https://git.soma.salesforce.com/nmcwilliams/blue/releases). All configuration data is stored in ~/Library/ApplicationData/blue and will continue to work across all releases except perhaps when the major number changes.
+Just download a new version from [Releases](https://git.soma.salesforce.com/nmcwilliams/blue/releases). All configuration data is stored in ~/Library/Application Support/blue and will continue to work across all releases except perhaps when the major number changes.
 
 Development
 -----------
