@@ -1,0 +1,52 @@
+<!--
+  Dialogs: change nickname
+
+  A window to change the nickname for a computer
+ -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
+
+<dom-module id="dialog-change-nickname">
+  <template>
+    <style>
+      :host paper-dialog{
+        min-width: 350px;
+      }
+    </style>
+
+    <paper-dialog id='dialog' on-iron-overlay-closed='_onClose'>
+      <h2>Change Nickname</h2>
+      <p>
+        <paper-input id='input' label='nickname' value='{{nickname}}' />
+      </p>
+      <div class='buttons'>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Ok</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dialog-change-nickname',
+
+      properties: {
+        nickname: String
+      },
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      _onClose: function() {
+        this.fire('dialog-closed', {
+          reason: this.$.dialog.closingReason,
+          nickname: this.nickname
+        });
+      }
+    });
+  </script>
+</dom-module>

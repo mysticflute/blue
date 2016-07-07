@@ -8,6 +8,7 @@
 <link rel='import' href='../../../bower_components/iron-icons/device-icons.html'>
 
 <link rel='import' href='../dialogs/dialog-confirmation.html'>
+<link rel='import' href='../dialogs/dialog-change-nickname.html'>
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
 <link rel='import' href='../status-icon-bluetooth/status-icon-bluetooth.html'>
@@ -167,9 +168,7 @@
         menu.showWithDefaults(e, [
           {
             label: 'Change Nickname',
-            click: () => {
-              console.log('change nickname');
-            }
+            click: () => { this.changeNickname() }
           },
           {
             label: 'Delete',
@@ -249,6 +248,28 @@
           .then(() => {
             console.info('card removed', this.cardId);
             this.fire('card-removed', {element: this, id: this.cardId});
+          })
+          .done();
+        }
+      },
+
+      changeNickname: function() {
+        this.nicknameDialog = document.createElement('dialog-change-nickname');
+        this.nicknameDialog.nickname = this.nickname;
+        this.listen(this.nicknameDialog, 'dialog-closed', '_doChangeNickname');
+        Polymer.dom(document.body).appendChild(this.nicknameDialog);
+        this.nicknameDialog.open();
+      },
+
+      _doChangeNickname: function(e, data) {
+        const db = require('./lib/db');
+
+        Polymer.dom(document.body).removeChild(this.nicknameDialog);
+
+        if (data.reason.confirmed) {
+          db.updateCard(this.cardId, {nickname: data.nickname})
+          .then(() => {
+            this.nickname = data.nickname;
           })
           .done();
         }
