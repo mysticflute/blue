@@ -28,11 +28,11 @@
 
       properties: {
         title: {
-          type: 'String',
+          type: String,
           value: 'Confirm Action'
         },
         message: {
-          type: 'String',
+          type: String,
           value: 'Do you really want to take this action?'
         }
       },
@@ -42,7 +42,7 @@
       },
 
       _onClose: function() {
-        this.fire('dialog-closed', this.$.dialog.closingReason);
+        this.fire('dialog-closed', {reason: this.$.dialog.closingReason});
       }
     });
   </script>

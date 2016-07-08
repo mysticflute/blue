@@ -1,0 +1,42 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="dialog-manager">
+  <template>
+    <style>
+      :host {}
+    </style>
+
+    <!-- content -->
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dialog-manager',
+
+      open: function(dialog, props) {
+        const Q = require('q');
+
+        this.deferred = Q.defer();
+
+        this.dialog = document.createElement(dialog);
+
+        if (props) {
+          Object.keys(props).forEach(prop => {
+            this.dialog[prop] = props[prop];
+          });
+        }
+
+        this.listen(this.dialog, 'dialog-closed', '_onDialogClosed');
+        Polymer.dom(document.body).appendChild(this.dialog);
+        this.dialog.open();
+
+        return this.deferred.promise;
+      },
+
+      _onDialogClosed: function(e, response) {
+        Polymer.dom(document.body).removeChild(this.dialog);
+        this.deferred.resolve(response);
+      }
+    });
+  </script>
+</dom-module>

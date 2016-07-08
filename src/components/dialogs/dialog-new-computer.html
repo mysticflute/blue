@@ -119,7 +119,7 @@
       },
 
       _onClose: function() {
-        this.fire('dialog-closed', this.$.dialog.closingReason);
+        this.fire('dialog-closed', {reason: this.$.dialog.closingReason});
       },
 
       _sshAgentUrl: function() {

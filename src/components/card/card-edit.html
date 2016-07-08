@@ -8,6 +8,7 @@
 
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
 <link rel='import' href='../status-icon-ssh/status-icon-ssh.html'>
+<link rel='import' href='../dialogs/dialog-manager.html'>
 <link rel='import' href='../dialogs/dialog-new-computer.html'>
 <link rel='import' href='./card-behavior.html'>
 <link rel='import' href='./card-styles.html'>
@@ -46,7 +47,7 @@
 
       <div class='card-content'>
         <!-- TYPE -->
-        <paper-dropdown-menu label='type' on-iron-select='changeType' noink>
+        <paper-dropdown-menu label='type' on-iron-select='_changeType' noink>
           <paper-listbox class='dropdown-content' selected='{{selectedTypeIndex(typeInfo, type)}}'>
             <paper-item data-key='macbook'>Macbook</paper-item>
             <paper-item data-key='imac'>iMac</paper-item>
@@ -56,23 +57,25 @@
         </paper-dropdown-menu>
 
         <!-- ADDRESS -->
-        <paper-input label='address' value='{{address}}' on-change='changeAddress' required auto-validate>
+        <paper-input label='address' value='{{address}}' on-change='_changeAddress' required auto-validate>
           <status-icon-ping show-status-check suffix></status-icon-ping>
         </paper-input>
 
         <!-- USERNAME -->
-        <paper-input label='username' value='{{username}}' on-change='changeUsername' required auto-validate>
+        <paper-input label='username' value='{{username}}' required auto-validate>
           <status-icon-ssh address='{{address}}' manage-key show-status-check suffix></status-icon-ssh>
         </paper-input>
 
         <!-- NICKNAME -->
-        <paper-input label='nickname' value='{{nickname}}' on-change='changeNickname'></paper-input>
+        <paper-input label='nickname' value='{{nickname}}'></paper-input>
       </div>
 
       <footer class='card-actions'>
         <paper-button on-tap='save'>Save</paper-button>
       </footer>
     </paper-card>
+
+    <dialog-manager id='dialogs'></dialog-manager>
   </template>
 
   <script>
@@ -83,12 +86,11 @@
         Blue.CardBehavior
       ],
 
-      // INPUT HANDLERS
-      changeType: function(e, detail) {
+      _changeType: function(e, detail) {
         this.type = detail.item.dataset.key;
       },
 
-      changeAddress: function(e) {
+      _changeAddress: function(e) {
         const S = require('string');
         this.address = e.target.value;
 
@@ -98,15 +100,6 @@
         }
       },
 
-      changeUsername: function(e) {
-        this.username = e.target.value;
-      },
-
-      changeNickname: function(e) {
-        this.nickname = e.target.value;
-      },
-
-      // SAVE HANDLERS
       save: function() {
         if (!this.address || !this.username) {
           alert('adress and username are required');
@@ -138,31 +131,21 @@
         }
       },
 
-      // DIALOG HANDLERS
       showNewComputerDialog: function() {
-        // TODO find a better way to open dialogs at body level
-        if (!this.newComputerDialog) {
-          this.newComputerDialog = document.createElement('dialog-new-computer');
-          this.listen(this.newComputerDialog, 'dialog-closed', '_onDialogClosed');
-          Polymer.dom(document.body).appendChild(this.newComputerDialog);
-        }
-        this.newComputerDialog.open();
-      },
-
-      _onDialogClosed: function(e, reason) {
         const setup = require ('./lib/setup');
 
-        Polymer.dom(document.body).removeChild(this.newComputerDialog);
-
-        if (reason.confirmed) {
-          setup.initialSetup(this.address, this.username)
-          .then(() => {
-            console.info('initial setup completed on remote machine');
-            this.cardId = 'x';
-            this.save();
-          })
-          .done();
-        }
+        this.$.dialogs.open('dialog-new-computer')
+        .then(response => {
+          if (response.reason.confirmed) {
+            return setup.initialSetup(this.address, this.username)
+            .then(() => {
+              console.info('initial setup completed on remote machine');
+              this.cardId = 'x';
+              this.save();
+            });
+          }
+        })
+        .done();
       }
     });
   </script>

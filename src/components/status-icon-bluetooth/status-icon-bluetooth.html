@@ -26,14 +26,10 @@
       is: 'status-icon-bluetooth',
 
       properties: {
-        address: {
-          type: 'String'
-        },
-        username: {
-          type: 'String'
-        },
+        address: String,
+        username: String,
         status: {
-          type: 'String',
+          type: String,
           notify: true,
           readOnly: true,
           value: 'unknown' // unchecked, off, on
@@ -56,14 +52,15 @@
         }
 
         bluetooth.status(this.address, this.username)
-        .then(response => {
-          this._setStatus(response ? 'on' : 'off');
-          this.$.icon.setIconStatus('highlight', response);
+        .then(isOn => {
+          this._setStatus(isOn ? 'on' : 'off');
+          this.$.icon.setIconStatus('highlight', isOn);
 
           if (this.showStatusCheck) {
             this.$.icon.hideSpinner();
           }
-        });
+        })
+        .done();
       }
     });
   </script>

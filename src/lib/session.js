@@ -25,12 +25,12 @@ module.exports = class Session {
    * call #end after executing all of your commands.
    * if a password is not provided, private key auth is used.
    *
-   * @param  {string} host - the host address
+   * @param  {string} address - the host address
    * @param  {string} username - the username
    * @param  {string} [password] - optional password
    * @returns {Promise<void>} - a promise
    */
-  connect(host, username, password) {
+  connect(address, username, password) {
     if (this.connection) {
       return Q.reject('already connected!');
     }
@@ -40,7 +40,7 @@ module.exports = class Session {
     let deferred = Q.defer();
 
     const config = {
-      host: host,
+      host: address,
       username: username,
       port: 22,
       readyTimeout: 10000,
@@ -187,10 +187,10 @@ module.exports = class Session {
    * @returns {Promise<void>} - a promise
    */
   notify(title, message) {
-    if (this.connection) {
-      return Q.reject('already connected!');
+    if (!this.connection) {
+      return Q.reject('not connected!');
     }
-    
+
     return this.exec(`osascript -e 'display notification "${message}" with title "${title}"'`);
   }
 

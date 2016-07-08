@@ -34,7 +34,7 @@
           value: 'n/a'
         },
         status: {
-          type: 'String',
+          type: String,
           notify: true,
           readOnly: true,
           value: 'unchecked' // unchecked, disconnected, connected
@@ -70,7 +70,8 @@
           if (this.showStatusCheck) {
             this.$.icon.hideSpinner();
           }
-        });
+        })
+        .done();
       }
     });
   </script>

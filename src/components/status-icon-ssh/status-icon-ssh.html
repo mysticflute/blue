@@ -18,6 +18,7 @@
 
 <link rel='import' href='../status-icon/status-icon-input-behavior.html'>
 <link rel='import' href='../status-icon/status-icon-styles.html'>
+<link rel='import' href='../dialogs/dialog-manager.html'>
 <link rel='import' href='../dialogs/dialog-create-key.html'>
 <link rel='import' href='../dialogs/dialog-copy-key.html'>
 <link rel='import' href='../status-icon/status-icon.html'>
@@ -48,7 +49,6 @@
       title='click me!'
       on-tap='showCreateKey'>
     </iron-icon>
-    <dialog-create-key id='createKeyDialog'></dialog-create-key>
 
     <!-- icon and dialog allowing user to copy key to the other computer -->
     <iron-icon
@@ -58,6 +58,8 @@
       title='click me!'
       on-tap='showCopyKey'>
     </iron-icon>
+
+    <dialog-manager id="dialogs"></dialog-manager>
   </template>
 
   <script>
@@ -65,11 +67,9 @@
       is: 'status-icon-ssh',
 
       properties: {
-        address: {
-          type: 'String'
-        },
+        address: String,
         status: {
-          type: 'String',
+          type: String,
           notify: true,
           readOnly: true,
           value: 'unverified' // unverified, verified
@@ -83,26 +83,6 @@
       behaviors: [
         Blue.StatusIconInputBehavior
       ],
-
-      listeners: {
-        'dialog-closed': 'onDialogClosed'
-      },
-
-      ready: function() {
-        this.copyKeyDialog = null;
-      },
-
-      detached: function() {
-        if (this.copyKeyDialog && this.copyKeyDialog.parentNode) {
-          Polymer.dom(document.body).removeChild(this.copyKeyDialog);
-        }
-      },
-
-      onDialogClosed: function() {
-        // when dialogs are closed, the user has probably taken an action like
-        // creating a key or copy a key, so check the status again.
-        this.checkStatus();
-      },
 
       onInvalidInput: function() {
         this.$.icon.setIconStatus('highlight', false);
@@ -155,20 +135,15 @@
       },
 
       showCreateKey: function() {
-        this.$.createKeyDialog.open();
+        this.$.dialogs.open('dialog-create-key').then(() => this.checkStatus());
       },
 
       showCopyKey: function() {
-        // TODO find a better way to open dialogs at body level
-        if (!this.copyKeyDialog) {
-          this.copyKeyDialog = document.createElement('dialog-copy-key');
-          this.listen(this.copyKeyDialog, 'dialog-closed', 'onDialogClosed');
-          Polymer.dom(document.body).appendChild(this.copyKeyDialog);
-        }
-
-        this.copyKeyDialog.username = this.currentValue;
-        this.copyKeyDialog.address = this.address;
-        this.copyKeyDialog.open();
+        this.$.dialogs.open('dialog-copy-key', {
+          username: this.currentValue,
+          address: this.address
+        })
+        .done();
       }
     });
   </script>

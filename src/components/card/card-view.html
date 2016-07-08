@@ -8,6 +8,7 @@
 <link rel='import' href='../../../bower_components/iron-icons/hardware-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icons/device-icons.html'>
 
+<link rel='import' href='../dialogs/dialog-manager.html'>
 <link rel='import' href='../dialogs/dialog-confirmation.html'>
 <link rel='import' href='../dialogs/dialog-change-nickname.html'>
 <link rel='import' href='../status-icon-ping/status-icon-ping.html'>
@@ -39,8 +40,7 @@
       .nickname {
         margin-top: 8px;
         font-size: 25px;
-        font-family: foo;
-        /*font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;*/
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
       }
 
       .status {
@@ -153,9 +153,12 @@
         </paper-button>
       </div>
     </paper-card>
+
     <paper-toast id='switchSuccess' class='success' text='Switch successful!'></paper-toast>
     <paper-toast id='switchFail' class='fail' text='Could not switch to the selected computer'></paper-toast>
     <paper-toast id='connectFail' class='fail' text='Could not find the computer'></paper-toast>
+
+    <dialog-manager id='dialogs'></dialog-manager>
   </template>
 
   <script>
@@ -168,6 +171,27 @@
 
       _shouldShowTDMAction(type) {
         return type == 'imac';
+      },
+
+      _onContextMenu: function(e) {
+        const menu = require('./menu/context');
+        menu.showWithDefaults(e, [
+          {
+            label: 'Change Nickname',
+            click: () => this.changeNickname()
+          },
+          {
+            label: 'Power Cycle Wifi',
+            click: () => this.powerCycleWifi()
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Delete Computer',
+            click: () => this.remove()
+          }
+        ]);
       },
 
       showProgress: function() {
@@ -183,27 +207,6 @@
           this.$.progress.style.display = 'none';
           this.$.progress.classList.remove('fadeOut');
         });
-      },
-
-      _onContextMenu: function(e) {
-        const menu = require('./menu/context');
-        menu.showWithDefaults(e, [
-          {
-            label: 'Change Nickname',
-            click: () => { this.changeNickname() }
-          },
-          {
-            label: 'Power Cycle Wifi',
-            click: () => { this.powerCycleWifi() }
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label: 'Delete Computer',
-            click: () => { this.remove() }
-          }
-        ]);
       },
 
       // ACTIONS
@@ -263,67 +266,57 @@
       },
 
       shutdown: function() {
-        this.confirm = document.createElement('dialog-confirmation');
-        this.confirm.message = `Are you sure you want to shutdown '${this.nickname}'?`;
-        this.listen(this.confirm, 'dialog-closed', '_doShutdown');
-        Polymer.dom(document.body).appendChild(this.confirm);
-        this.confirm.open();
-      },
-
-      _doShutdown: function(e, reason) {
         const misc = require('./lib/misc');
 
-        Polymer.dom(document.body).removeChild(this.confirm);
-
-        if (reason.confirmed) {
-          this.showProgress();
-          misc.shutdown(this.address, this.username)
-            .fail(() => this.$.connectFail.open())
-            .finally(() => this.hideProgress());
-        }
+        this.$.dialogs.open('dialog-confirmation', {
+          message: `Are you sure you want to shutdown '${this.nickname}'?`
+        })
+        .then(response => {
+          if (response.reason.confirmed) {
+            this.showProgress();
+            misc.shutdown(this.address, this.username)
+              .fail(() => this.$.connectFail.open())
+              .finally(() => this.hideProgress());
+          }
+        })
+        .done();
       },
 
       remove: function() {
-        this.confirm = document.createElement('dialog-confirmation');
-        this.confirm.message = `Are you sure you want to delete '${this.nickname}'?`;
-        this.listen(this.confirm, 'dialog-closed', '_doRemove');
-        Polymer.dom(document.body).appendChild(this.confirm);
-        this.confirm.open();
-      },
-
-      _doRemove: function(e, reason) {
         const db = require('./lib/db');
 
-        Polymer.dom(document.body).removeChild(this.confirm);
-
-        if (reason.confirmed) {
-          db.removeCard(this.cardId)
-          .then(() => {
-            console.info('card removed', this.cardId);
-            this.fire('card-removed', {element: this, id: this.cardId});
-          })
-          .done();
-        }
+        this.$.dialogs.open('dialog-confirmation', {
+          message: `Are you sure you want to delete '${this.nickname}'?`
+        })
+        .then(response => {
+          if (response.reason.confirmed) {
+            return db.removeCard(this.cardId)
+            .then(() => {
+              console.info('card removed', this.cardId);
+              this.fire('card-removed', {element: this, id: this.cardId});
+            });
+          }
+        })
+        .done();
       },
 
       changeNickname: function() {
-        this.nicknameDialog = document.createElement('dialog-change-nickname');
-        this.nicknameDialog.nickname = this.nickname;
-        this.listen(this.nicknameDialog, 'dialog-closed', '_doChangeNickname');
-        Polymer.dom(document.body).appendChild(this.nicknameDialog);
-        this.nicknameDialog.open();
-      },
-
-      _doChangeNickname: function(e, data) {
         const db = require('./lib/db');
 
-        Polymer.dom(document.body).removeChild(this.nicknameDialog);
-
-        if (data.reason.confirmed) {
-          db.updateCard(this.cardId, {nickname: data.nickname})
-            .then(() => { this.nickname = data.nickname })
-            .done();
-        }
+        this.$.dialogs.open('dialog-change-nickname', {
+          nickname: this.nickname
+        })
+        .then(response => {
+          if (response.reason.confirmed) {
+            return db.updateCard(this.cardId, {
+              nickname: response.nickname
+            })
+            .then(() => {
+              this.nickname = response.nickname;
+            });
+          }
+        })
+        .done();
       },
 
       powerCycleWifi: function() {
