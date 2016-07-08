@@ -1,5 +1,6 @@
 const Q = require('Q');
 const db = require('../lib/db');
+const switcher = require('../lib/switcher');
 
 module.exports = function() {
   let deferred = Q.defer();
@@ -16,8 +17,8 @@ module.exports = function() {
     cards.forEach(card => {
       switchSubmenu.push({
         label: `Switch to ${card.nickname}`,
-        click: function(item) {
-          console.log(item.label);
+        click: function() {
+          switcher.switchTo(card.address, card.username);
         }
       });
     });

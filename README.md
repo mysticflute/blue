@@ -32,10 +32,12 @@ Features
 - Remotely toggle Target Display Mode on iMacs (to use screen as another monitor)
 - Send a friendly shutdown signal to another Mac remotely
 - Send public SSH keys to another Mac
-- Notifications
+- Notifications (kinda)
 - Dock menu actions
 - Application menus
+- Context menus
 - Remembers window positioning
+- Menubar
 
 Updating
 --------

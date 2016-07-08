@@ -26,6 +26,7 @@
     "milliseconds": "^1.0.3",
     "nedb": "^1.8.0",
     "ping": "git+https://github.com/danielzzz/node-ping.git",
+    "promised-exec": "^1.0.1",
     "q": "^1.4.1",
     "ssh2": "^0.5.0",
     "string": "^3.3.1"

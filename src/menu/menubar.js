@@ -1,7 +1,10 @@
 const path = require('path');
 const db = require('../lib/db');
+const switcher = require('../lib/switcher');
 const {Tray, Menu} = require('electron').remote;
 const iconPath = path.join(__dirname, '../../resources/menubar-alt2.png');
+
+let menubar = null; // prevent GC
 
 module.exports = function() {
   db.getCards().then(cards => {
@@ -11,7 +14,7 @@ module.exports = function() {
       template.push({
         label: `Switch to ${card.nickname}`,
         click() {
-          console.log(card.nickname);
+          switcher.switchTo(card.address, card.username);
         }
       });
     });
@@ -26,7 +29,7 @@ module.exports = function() {
       }
     ]);
 
-    let menubar = new Tray(iconPath);
+    menubar = new Tray(iconPath);
     menubar.setToolTip('Blue');
     menubar.setContextMenu(Menu.buildFromTemplate(template));
   })

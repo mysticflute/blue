@@ -2,6 +2,7 @@
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
 <link rel='import' href='../../../bower_components/paper-progress/paper-progress.html'>
 <link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-toast/paper-toast.html'>
 <link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
 <link rel='import' href='../../../bower_components/iron-icons/hardware-icons.html'>
@@ -75,6 +76,20 @@
         color: #777;
         margin-right: 6px;
       }
+
+      paper-toast {
+        white-space: nowrap;
+        font-weight: bold;
+      }
+
+      paper-toast.success {
+        background-color:  var(--google-green-300);
+      }
+
+      paper-toast.fail {
+        color: #9f6000;
+        background-color: var(--google-yellow-300);
+      }
     </style>
 
     <paper-card on-contextmenu='_onContextMenu'>
@@ -109,7 +124,8 @@
       </div>
 
       <div class='card-actions'>
-        <paper-button on-tap='switchToComputer'>
+        <paper-button on-tap='switchToComputer'
+          title='hold ⌘ (command) to also toggle Target Display Mode on your iMac, if available'>
           <iron-icon icon='hardware:keyboard'></iron-icon>
           Switch to this computer
         </paper-button>
@@ -124,7 +140,8 @@
           Turn bluetooth off
         </paper-button>
 
-        <paper-button on-tap='targetDisplayMode' hidden$='{{!_showTargetDisplayAction(type)}}'>
+        <paper-button on-tap='targetDisplayMode' hidden$='{{!_showTargetDisplayAction(type)}}'
+          title='Will only work if the iMac has at least one connected keyboard'>
           <iron-icon icon='hardware:desktop-windows'></iron-icon>
           Target Display Mode
         </paper-button>
@@ -135,6 +152,8 @@
         </paper-button>
       </div>
     </paper-card>
+    <paper-toast id='switchSuccess' class='success' text='Switch successful!'></paper-toast>
+    <paper-toast id='switchFail' class='fail' text='Could not switch to the selected computer'></paper-toast>
   </template>
 
   <script>
@@ -160,6 +179,7 @@
         this.$.progress.classList.add('fadeOut');
         Q.delay(1000).then(() => {
           this.$.progress.style.display = 'none';
+          this.$.progress.classList.remove('fadeOut');
         });
       },
 
@@ -181,8 +201,29 @@
       },
 
       // ACTIONS
-      switchToComputer: function() {
+      switchToComputer: function(e) {
+        const switcher = require('./lib/switcher');
+
         this._showProgress();
+
+        console.log('switching to ' + this.nickname);
+
+        let alsoToggleTDM = e.detail.sourceEvent.metaKey;
+        if (alsoToggleTDM) {
+          console.info('will also toggle target display mode if possible');
+        }
+
+        switcher.switchTo(this.address, this.username, alsoToggleTDM)
+        .then(() => {
+          console.log('switch successful');
+          this.$.switchSuccess.open();
+          this._hideProgress();
+        })
+        .fail((error) => {
+          console.warn('error switching to computer:', error);
+          this.$.switchFail.open();
+          this._hideProgress();
+        });
       },
 
       enableBluetooth: function() {
