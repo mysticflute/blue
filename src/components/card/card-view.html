@@ -3,8 +3,8 @@
 <link rel='import' href='../../../bower_components/paper-progress/paper-progress.html'>
 <link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
 <link rel='import' href='../../../bower_components/paper-toast/paper-toast.html'>
-<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icons/hardware-icons.html'>
 <link rel='import' href='../../../bower_components/iron-icons/device-icons.html'>
 
@@ -23,9 +23,9 @@
         width: 100%;
         display: none;
         position: absolute;
+        /*opacity: .6;*/
         --paper-progress-container-color: #fff;
         --paper-progress-active-color: var(--google-green-300);
-        /*opacity: .6;*/
       }
 
       header {
@@ -140,7 +140,7 @@
           Turn bluetooth off
         </paper-button>
 
-        <paper-button on-tap='targetDisplayMode' hidden$='{{!_showTargetDisplayAction(type)}}'
+        <paper-button on-tap='targetDisplayMode' hidden$='{{!_shouldShowTDMAction(type)}}'
           title='Will only work if the iMac has at least one connected keyboard'>
           <iron-icon icon='hardware:desktop-windows'></iron-icon>
           Target Display Mode
@@ -154,6 +154,7 @@
     </paper-card>
     <paper-toast id='switchSuccess' class='success' text='Switch successful!'></paper-toast>
     <paper-toast id='switchFail' class='fail' text='Could not switch to the selected computer'></paper-toast>
+    <paper-toast id='connectFail' class='fail' text='Could not find the computer'></paper-toast>
   </template>
 
   <script>
@@ -164,16 +165,16 @@
         Blue.CardBehavior
       ],
 
-      _showTargetDisplayAction(type) {
+      _shouldShowTDMAction(type) {
         return type == 'imac';
       },
 
-      _showProgress: function() {
+      showProgress: function() {
         this.$.progress.style.display = 'block';
         this.$.progress.classList.add('fadeIn');
       },
 
-      _hideProgress: function() {
+      hideProgress: function() {
         const Q = require ('Q');
         this.$.progress.classList.remove('fadeIn');
         this.$.progress.classList.add('fadeOut');
@@ -191,6 +192,10 @@
             click: () => { this.changeNickname() }
           },
           {
+            label: 'Power Cycle Wifi',
+            click: () => { this.powerCycleWifi() }
+          },
+          {
             type: 'separator'
           },
           {
@@ -204,7 +209,7 @@
       switchToComputer: function(e) {
         const switcher = require('./lib/switcher');
 
-        this._showProgress();
+        this.showProgress();
 
         console.log('switching to ' + this.nickname);
 
@@ -217,40 +222,43 @@
         .then(() => {
           console.log('switch successful');
           this.$.switchSuccess.open();
-          this._hideProgress();
+          this.hideProgress();
         })
         .fail((error) => {
           console.warn('error switching to computer:', error);
           this.$.switchFail.open();
-          this._hideProgress();
+          this.hideProgress();
         });
       },
 
       enableBluetooth: function() {
         const bluetooth = require('./lib/bluetooth');
 
-        this._showProgress();
+        this.showProgress();
+
         bluetooth.turnOn(this.address, this.username)
-        .then(() => this._hideProgress())
-        .done();
+          .fail(() => this.$.connectFail.open())
+          .finally(() => this.hideProgress());
       },
 
       disableBluetooth: function() {
         const bluetooth = require('./lib/bluetooth');
 
-        this._showProgress();
+        this.showProgress();
+
         bluetooth.turnOff(this.address, this.username)
-        .then(() => this._hideProgress())
-        .done();
+          .fail(() => this.$.connectFail.open())
+          .finally(() => this.hideProgress());
       },
 
       targetDisplayMode: function() {
         const misc = require('./lib/misc');
 
-        this._showProgress();
+        this.showProgress();
+
         misc.toggleTargetDisplayMode(this.address, this.username)
-        .then(() => this._hideProgress())
-        .done();
+          .fail(() => this.$.connectFail.open())
+          .finally(() => this.hideProgress());
       },
 
       shutdown: function() {
@@ -267,10 +275,10 @@
         Polymer.dom(document.body).removeChild(this.confirm);
 
         if (reason.confirmed) {
-          this._showProgress();
+          this.showProgress();
           misc.shutdown(this.address, this.username)
-          .then(() => this._hideProgress())
-          .done();
+            .fail(() => this.$.connectFail.open())
+            .finally(() => this.hideProgress());
         }
       },
 
@@ -312,11 +320,19 @@
 
         if (data.reason.confirmed) {
           db.updateCard(this.cardId, {nickname: data.nickname})
-          .then(() => {
-            this.nickname = data.nickname;
-          })
-          .done();
+            .then(() => { this.nickname = data.nickname })
+            .done();
         }
+      },
+
+      powerCycleWifi: function() {
+        const network = require('./lib/network');
+
+        this.showProgress();
+
+        network.toggleWifi(this.address, this.username)
+          .fail(() => this.$.connectFail.open())
+          .finally(() => this.hideProgress());
       }
     });
   </script>
