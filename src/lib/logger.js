@@ -1,5 +1,6 @@
 // logger.js
 // handles logging to console
+
 const devMode = require('electron-is-dev');
 
 module.exports = class Logger {

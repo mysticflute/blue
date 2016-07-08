@@ -39,7 +39,7 @@
       },
 
       delayedHide: function() {
-        const Q = require('Q');
+        const Q = require('q');
         Q.delay(1200).then(() => { this.active = false; });
       }
     });

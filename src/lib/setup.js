@@ -1,7 +1,7 @@
 // setup.js
 // handles setup of remote computers
 
-const Q = require('Q');
+const Q = require('q');
 const path = require('path');
 const Session = require('./session');
 

@@ -66,14 +66,14 @@
       },
 
       attached: function() {
-        const Q = require('Q');
+        const Q = require('q');
         Q.delay(1100).then(() => {
           this.$.add.classList.add('animated','rubberBand');
         });
       },
 
       newCard: function() {
-        const Q = require('Q');
+        const Q = require('q');
         this.$.welcome.classList.add('fadeOutUp');
         this.$.add.classList.add('zoomOut');
 
@@ -84,7 +84,7 @@
       },
 
       _onCardSaved: function(e, card) {
-        const Q = require('Q');
+        const Q = require('q');
         Q.fcall(() => {
           this.$.card.classList.remove('flipInY');
           this.$.card.classList.add('bounceOut');

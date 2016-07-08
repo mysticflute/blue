@@ -1,4 +1,7 @@
-const Q = require('Q');
+// dock.js
+// app icon menu
+
+const Q = require('q');
 const db = require('../lib/db');
 const switcher = require('../lib/switcher');
 
@@ -17,7 +20,7 @@ module.exports = function() {
     cards.forEach(card => {
       switchSubmenu.push({
         label: `Switch to ${card.nickname}`,
-        click: function() {
+        click() {
           switcher.switchTo(card.address, card.username);
         }
       });

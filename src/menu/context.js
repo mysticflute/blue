@@ -1,3 +1,6 @@
+// context.js
+// right-click menu
+
 const isDev = require('electron-is-dev');
 const {remote} = require('electron');
 const {Menu} = remote;

@@ -70,7 +70,7 @@
       },
 
       _onCardSaved: function(e, card) {
-        const Q = require('Q');
+        const Q = require('q');
         Q.fcall(() => {
           this.tmpCard.classList.add('animated', 'zoomOut');
         })
@@ -90,7 +90,7 @@
         }
 
         if (index > -1) {
-          const Q = require('Q');
+          const Q = require('q');
           data.element.classList.add('animated', 'zoomOut');
           Q.delay(1100).then(() => {
             this.splice('cards', index, 1);

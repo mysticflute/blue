@@ -3,7 +3,7 @@
 
 const Q = require('q');
 const ssh2 = require('ssh2');
-const Logger = require('./Logger');
+const Logger = require('./logger');
 
 module.exports = class Session {
   constructor() {
@@ -187,6 +187,10 @@ module.exports = class Session {
    * @returns {Promise<void>} - a promise
    */
   notify(title, message) {
+    if (this.connection) {
+      return Q.reject('already connected!');
+    }
+    
     return this.exec(`osascript -e 'display notification "${message}" with title "${title}"'`);
   }
 

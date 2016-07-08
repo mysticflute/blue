@@ -1,3 +1,6 @@
+// menubar.js
+// top menubar icon
+
 const path = require('path');
 const db = require('../lib/db');
 const switcher = require('../lib/switcher');

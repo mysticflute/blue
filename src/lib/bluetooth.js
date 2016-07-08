@@ -1,6 +1,7 @@
 // bluetooth.js
 // ssh commands related to bluetooth
-const Q = require('Q');
+
+const Q = require('q');
 const Session = require('./session');
 
 module.exports.status = function(address, username) {
@@ -22,7 +23,8 @@ module.exports.status = function(address, username) {
     } else {
       return Q.reject(new Error('Unknown bluetooth status: '  + response));
     }
-  }).fail(() => {
+  })
+  .fail(() => {
     return false;
   });
 };

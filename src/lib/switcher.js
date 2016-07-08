@@ -1,7 +1,7 @@
 // switcher.js
 // tries to safely handle switching bluetooth enablement to other devices
 
-const Q = require('Q');
+const Q = require('q');
 const path = require('path');
 const exec = require('promised-exec');
 

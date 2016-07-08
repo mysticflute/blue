@@ -1,7 +1,6 @@
 // dynamic.js
 // additions to the main application menu, added later in app.html
 
-// const {remote} = require('electron');
 const devMode = require('electron-is-dev');
 
 let template = [

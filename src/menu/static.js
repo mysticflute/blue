@@ -1,4 +1,4 @@
-// menu.js
+// static.js
 // main application menu, added immediately in main.js.
 
 const name = 'Blue';
