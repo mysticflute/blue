@@ -256,11 +256,11 @@
       },
 
       targetDisplayMode: function() {
-        const misc = require('./lib/misc');
+        const display = require('./lib/display');
 
         this.showProgress();
 
-        misc.toggleTargetDisplayMode(this.address, this.username)
+        display.toggleTargetDisplayMode(this.address, this.username)
           .fail(() => this.$.connectFail.open())
           .finally(() => this.hideProgress());
       },

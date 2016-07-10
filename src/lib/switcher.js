@@ -8,7 +8,7 @@ const exec = require('promised-exec');
 const db = require('./db');
 const network = require('./network');
 const bluetooth = require('./bluetooth');
-const misc = require('./misc');
+const display = require('./display');
 
 const blueutil = path.join(__dirname, '../../resources/blueutil');
 
@@ -56,9 +56,18 @@ exports.switchTo = function(address, username, toggleTargetDisplayMode) {
     // Toggle target display mode now if the iMac is going to have it's
     // bluetooth switched off. this is because the iMac doesn't seem to
     // take the keycode if there aren't any keyboards connected).
-    if (toggleTargetDisplayMode && iMac && toTurnOff.includes(iMac)) {
-      console.log('toggling target display mode for ' + iMac.nickname);
-      return misc.toggleTargetDisplayMode(iMac.address, iMac.username);
+    if (toggleTargetDisplayMode) {
+      if (iMac && toTurnOff.includes(iMac)) {
+        console.log('toggling target display mode for ' + iMac.nickname);
+        return display.toggleTargetDisplayMode(iMac.address, iMac.username);
+      } else {
+        // this computer might be the iMac, but there might not be a card for it
+        return exec('sysctl hw.model').then(response => {
+          if (response.toLowerCase().includes('imac')) {
+            return display.toggleOwnTargetDisplayMode();
+          }
+        });
+      }
     }
   })
   .then(() => {
@@ -92,9 +101,17 @@ exports.switchTo = function(address, username, toggleTargetDisplayMode) {
       return exec(`${blueutil} on`)
       .then(() => {
         // undo display mode toggle
-        if (toggleTargetDisplayMode && iMac) {
+        if (toggleTargetDisplayMode) {
           console.log('reversing target display mode for ' + iMac.nickname);
-          return misc.toggleTargetDisplayMode(iMac.address, iMac.username);
+          if (iMac && toTurnOff.includes(iMac)) {
+            return display.toggleTargetDisplayMode(iMac.address, iMac.username);
+          } else {
+            return exec('sysctl hw.model').then(response => {
+              if (response.toLowerCase().includes('imac')) {
+                return display.toggleOwnTargetDisplayMode();
+              }
+            });
+          }
         }
       })
       .then(() => {
