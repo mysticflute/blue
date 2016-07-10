@@ -143,6 +143,9 @@
           username: this.currentValue,
           address: this.address
         })
+        .then(() => {
+          this.checkStatus();
+        })
         .done();
       }
     });
