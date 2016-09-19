@@ -5,7 +5,7 @@
   "author": "Nathan McWilliams",
   "repository": {
     "type": "git",
-    "url": "https://git.soma.salesforce.com/nmcwilliams/blue"
+    "url": "https://github.com/mysticflute/blue"
   },
   "license": "BSD-3-Clause",
   "main": "src/main.js",
@@ -17,8 +17,8 @@
     "dist": "electron-packager ./ Blue --platform darwin --arch x64 --out ./dist/Blue --overwrite --icon=./resources/app.icns --app-version=$npm_package_version --prune  --app-category-type=public.app-category.productivity --ignore dist",
     "postdist": "npm run zip",
     "postversion": "git push && git push --tags",
-    "draft": "publish-release --apiUrl https://git.soma.salesforce.com/api/v3 --assets dist/Blue/Blue-darwin-x64/Blue.app.zip --owner nmcwilliams --repo $npm_package_name --token $GHE_TOKEN_BLUE --draft --reuseRelease",
-    "release": "publish-release --apiUrl https://git.soma.salesforce.com/api/v3 --assets dist/Blue/Blue-darwin-x64/Blue.app.zip --owner nmcwilliams --repo $npm_package_name --token $GHE_TOKEN_BLUE --reuseRelease"
+    "draft": "publish-release --assets dist/Blue/Blue-darwin-x64/Blue.app.zip --owner nmcwilliams --repo $npm_package_name --token $BLUE_DIST_TOKEN --draft --reuseRelease",
+    "release": "publish-release --assets dist/Blue/Blue-darwin-x64/Blue.app.zip --owner nmcwilliams --repo $npm_package_name --token $BLUE_DIST_TOKEN --reuseRelease"
   },
   "dependencies": {
     "electron-is-dev": "^0.1.1",

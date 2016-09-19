@@ -23,7 +23,7 @@ Features
 Getting Started
 ---------------
 
-Download the the Blue.app.zip file from the latest [Release](https://git.soma.salesforce.com/nmcwilliams/blue/releases). Unzip the file and move the app to your Applications folder.
+Download the the Blue.app.zip file from the latest [Release](https://github.com/mysticflute/blue/releases). Unzip the file and move the app to your Applications folder.
 
 You will need to manually add the bluetooth keyboard and mouse to each mac beforehand if you haven't already. It's easiest to do this by turning bluetooth off on the other computers. You will also need to setup SSH keys on each computer if you haven't already (more info provided in the app).
 
@@ -35,7 +35,7 @@ Generally you should open the app on the computer that currently has the bluetoo
 
 ### Updating
 
-Just download a new version from [Releases](https://git.soma.salesforce.com/nmcwilliams/blue/releases). All configuration data is stored in ~/Library/Application Support/blue and will continue to work across all releases except perhaps when the major number changes.
+Just download a new version from [Releases](https://github.com/mysticflute/blue/releases). All configuration data is stored in ~/Library/Application Support/blue and will continue to work across all releases except perhaps when the major number changes.
 
 Tips
 ----
@@ -88,11 +88,11 @@ Developed using electron, nodejs and polymer. Probably will only build on OS X.
 
 ### Release
 
-Releases are pushed to [Github](https://git.soma.salesforce.com/nmcwilliams/blue/releases).
+Releases are pushed to [Github](https://github.com/mysticflute/blue/releases).
 
-Before releasing, commit all changes and push. To push changes to Github, you must have the `GHE_TOKEN_BLUE` environment variable defined, set to the value of a Github personal access token. For example, in ~/.bash_profile:
+Before releasing, commit all changes and push. To push changes to Github, you must have the `GHE_TOKEN_BLUE` environment variable defined, set to the value of a Github personal access token. For example, in ~/.bashrc:
 
-    export GHE_TOKEN_BLUE=token
+    export BLUE_DIST_TOKEN=token
 
 Release a draft:
 
