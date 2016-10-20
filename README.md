@@ -45,8 +45,13 @@ Tips
 - There are additional actions available when you right click a card.
 - You can also perform some actions by right-clicking the dock icon or using the icon in the menubar.
 - To debug issues, open up the console via View -> Toggle Development Tools.
-- The app periodically sends signals to check the status of other computers. If you aren't using the app then close the window or quit the app to prevent unnecessary operations.
-- If you use a VPN, you should disconnect from the VPN before switching away from it.
+- The app periodically sends signals to check the status of other computers. If you aren't using the app then close the window or quit the app to prevent unnecessary operations. There is a preference under 'Options' to automatically quit the app after switching to another computer.
+- If you use a VPN, you should disconnect from the VPN before switching away from it otherwise you won't be able to switch back.
+
+Notice
+------
+
+Please note that this app works by simply turning bluetooth on and off. This affects ALL bluetooth devices, so if you have other bluetooth devices that you need to keep connected while the keyboard and and mouse is on another computer then this app will not work for you.
 
 About
 -----
