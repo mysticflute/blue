@@ -96,7 +96,17 @@ exports.switchTo = function(address, username, toggleTargetDisplayMode) {
     return false;
   })
   .then(isOn => {
-    if (!isOn) {
+    if (isOn) {
+      // switch confirmed. quit app if pref specifies
+      db.getPref('autoquit').then(autoquit => {
+        if (autoquit) {
+          console.log('automatically shutting down in 5 seconds due to user preference!');
+          setTimeout(() => {
+            require('electron').remote.app.quit();
+          }, 5000);
+        }
+      });
+    } else {
       // egads! ok so we have to turn our bluetooth back on then
       console.warn('could not confirm bluetooth was actually turned on, ' +
         'so turning bluetooth for this computer back on.');

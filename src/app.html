@@ -11,9 +11,11 @@
       const {app, Menu} = require('electron').remote;
 
       // additions to the app menu
-      const staticMenu = require('./menu/static');
       const dynamicMenu = require('./menu/dynamic');
-      Menu.setApplicationMenu(Menu.buildFromTemplate(staticMenu.concat(dynamicMenu)));
+      dynamicMenu().then(menu => {
+        const staticMenu = require('./menu/static');
+        Menu.setApplicationMenu(Menu.buildFromTemplate(staticMenu.concat(menu)));
+      });
 
       // set the doc menu
       const dockMenu = require('./menu/dock');
