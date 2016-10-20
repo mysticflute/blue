@@ -91,6 +91,9 @@ exports.switchTo = function(address, username, toggleTargetDisplayMode) {
   .then(() => {
     // confirm bluetooth is on for the other computer
     return bluetooth.status(address, username);
+  }, (e) => {
+    console.warn(e);
+    return false;
   })
   .then(isOn => {
     if (!isOn) {

@@ -39,7 +39,7 @@ module.exports.turnOn = function(address, username) {
   .then(() => {
     return session.notify('Bluetooth', 'Bluetooth was turned ON remotely');
   })
-  .then(() => {
+  .fin(() => {
     session.end();
   });
 };
@@ -54,7 +54,7 @@ module.exports.turnOff = function(address, username) {
   .then(() => {
     return session.notify('Bluetooth', 'Bluetooth was turned OFF remotely');
   })
-  .then(() => {
+  .fin(() => {
     session.end();
   });
 };

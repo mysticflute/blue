@@ -3,6 +3,7 @@
 const windowState = require('electron-window-state');
 const electron = require('electron');
 const {app, Menu, BrowserWindow} = electron;
+const exec = require('promised-exec');
 
 let win;
 
@@ -35,6 +36,10 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null;
   });
+
+  // fix problem in sierra where ssh agent doesn't load keys
+  // https://github.com/lionheart/openradar-mirror/issues/15361
+  exec('ssh-add -K')
 }
 
 // This method will be called when Electron has finished

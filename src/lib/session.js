@@ -40,6 +40,7 @@ module.exports = class Session {
     let deferred = Q.defer();
 
     const config = {
+      // debug: (e) => {console.log(e)},
       host: address,
       username: username,
       port: 22,
